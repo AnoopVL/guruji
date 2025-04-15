@@ -42,7 +42,9 @@ export function AppSidebar() {
         <SidebarGroup>
           {SidebarOptions.map((option, index) => (
             <SidebarMenuItem key={index} className="p-1">
-              <SidebarMenuButton asChild className="p-5">
+              <SidebarMenuButton
+                asChild
+                className={`p-5 ${path === option.path ? "bg-green-100" : ""}`}>
                 <Link
                   href={option.path}
                   className="flex items-center space-x-2">
