@@ -49,7 +49,7 @@ function Login() {
 
           <Button
             onClick={SignInWithGoogle}
-            variant="secondary"
+            variant="outline"
             className="w-full">
             <FcGoogle className="mr-2 size-5" />
             Login with Google
@@ -58,7 +58,7 @@ function Login() {
 
           <Button
             onClick={SignInWithGithub}
-            variant="secondary"
+            variant="outline"
             className="w-full">
             <FaGithub className="mr-2 size5"></FaGithub>
             Login with Github
