@@ -9,7 +9,7 @@ function DashboardProvider({ children }) {
       <SidebarProvider>
         <AppSidebar />
         <SidebarTrigger />
-        <div>{children}</div>;
+        <div>{children}</div>
       </SidebarProvider>
     </>
   );
