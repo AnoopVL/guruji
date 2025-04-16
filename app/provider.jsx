@@ -1,7 +1,7 @@
 // app/provider.jsx
 "use client";
 import { useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // useRouter from 'next/navigation'
+import { useRouter } from "next/navigation";
 import { supabase } from "@/services/supabaseClient";
 import { UserDetailContext } from "./context/UserDetailContext";
 
@@ -47,11 +47,15 @@ function Provider({ children }) {
     } else {
       setUser(Users[0]);
     }
+
+    // if (pathname !== "/dashboard") {
+    //   router.replace("/dashboard");
+    // }
   };
 
   return (
     <>
-      <UserDetailContext.Provider value={(user, setUser)}>
+      <UserDetailContext.Provider value={{ user, setUser }}>
         {children}
       </UserDetailContext.Provider>
     </>

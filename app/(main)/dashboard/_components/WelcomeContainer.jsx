@@ -2,14 +2,17 @@
 "use client";
 import React from "react";
 import { useUser } from "@/app/provider";
+import Image from "next/image";
 
 function WelcomeContainer() {
   const { user } = useUser();
-  if (user == null) {
-    console.log("no user");
-  } else {
-    console.log(user.name);
-  }
+  // if (user == null) {
+  //   console.log("no user");
+  // } else {
+  //   console.log(user.name);
+  //   console.log(user.email);
+  //   console.log(user.picture);
+  // }
 
   return (
     <>
@@ -19,17 +22,17 @@ function WelcomeContainer() {
           <h2 className="text-grey-500">
             AI-Driven interviews are just few a clicks away.
           </h2>
-          {/* inside next.config.mjs make changes for domain 1.11. */}
-          {user && (
-            <img
-              src="{user?.picture}"
-              alt="userAvatar"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-          )}
         </div>
+        {/* inside next.config.mjs make changes for domain 1.11. */}
+        {user && (
+          <Image
+            src={user?.picture}
+            alt="userAvatar"
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
+        )}
       </div>
     </>
   );
