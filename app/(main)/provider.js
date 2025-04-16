@@ -8,8 +8,10 @@ function DashboardProvider({ children }) {
     <>
       <SidebarProvider>
         <AppSidebar />
-        <SidebarTrigger />
-        <div>{children}</div>
+        <div className="w-full">
+          <SidebarTrigger />
+          {children}
+        </div>
       </SidebarProvider>
     </>
   );

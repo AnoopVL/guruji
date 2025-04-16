@@ -1,11 +1,13 @@
 // (main)/dashboard/page.jsx
 import React from "react";
+import WelcomeContainer from "./_components/WelcomeContainer";
 
 function Dashboard() {
-  console.log("You are on the dashboard");
   return (
     <>
-      <div>This is the dashboard page</div>
+      <div className="p-5">
+        <WelcomeContainer />
+      </div>
     </>
   );
 }

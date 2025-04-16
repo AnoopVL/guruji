@@ -5,7 +5,10 @@ import DashboardProvider from "./provider";
 function DashboardLayout({ children }) {
   return (
     <div>
-      <DashboardProvider>{children}</DashboardProvider>
+      <DashboardProvider>
+        <div className="p-5"></div>
+        {children}
+      </DashboardProvider>
     </div>
   );
 }
