@@ -2,14 +2,16 @@
 import React from "react";
 import { FaVideo } from "react-icons/fa6";
 import { FaPhoneAlt } from "react-icons/fa";
+import Link from "next/link";
 
 function CreateOptions() {
   return (
     <div className="flex flex-row justify-between p-5 space-x-20">
       {/* Card 1 */}
-      <div
+      <Link
+        href={"dashboard/create-interview"}
         className="flex flex-col bg-gray-100 w-full p-10 rounded-2xl space-y-4 
-                      hover:bg-gray-200 hover:shadow-lg transition">
+                      hover:bg-gray-200 hover:shadow-lg transition cursor-pointer">
         <div className="w-12 h-12 bg-green-100 rounded-lg inline-flex items-center justify-center">
           <FaVideo className="text-green-700 w-6 h-6" />
         </div>
@@ -18,7 +20,7 @@ function CreateOptions() {
         <p className="text-gray-500">
           Create AI interviews and schedule them with candidates.
         </p>
-      </div>
+      </Link>
 
       {/* Card 2 */}
       <div
