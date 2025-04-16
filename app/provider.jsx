@@ -1,3 +1,4 @@
+// app/provider.jsx
 "use client";
 import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // useRouter from 'next/navigation'
@@ -50,7 +51,9 @@ function Provider({ children }) {
 
   return (
     <>
-      <UserDetailContext value={(user, setUser)}>{children}</UserDetailContext>
+      <UserDetailContext.Provider value={(user, setUser)}>
+        {children}
+      </UserDetailContext.Provider>
     </>
   );
 }
