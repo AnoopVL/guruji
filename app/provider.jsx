@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // useRouter from 'next/navigation'
 import { supabase } from "@/services/supabaseClient";
 import { UserDetailContext } from "./context/UserDetailContext";
@@ -56,3 +56,8 @@ function Provider({ children }) {
 }
 
 export default Provider;
+
+export const useUser = () => {
+  const context = useContext(UserDetailContext);
+  return context;
+};
