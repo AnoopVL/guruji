@@ -20,7 +20,7 @@ function WelcomeContainer() {
         <div>
           <h2 className="text-lg font-bold">Welcome back, {user?.name}!</h2>
           <h2 className="text-grey-500">
-            AI-Driven interviews are just few a clicks away.
+            AI-Driven interviews are just a few clicks away.
           </h2>
         </div>
         {/* inside next.config.mjs make changes for domain 1.11. */}
