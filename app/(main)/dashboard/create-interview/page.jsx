@@ -1,3 +1,4 @@
+// app/(main)/dashboard/create-interview/page.jsx
 "use client";
 import React, { useState } from "react";
 import { ArrowLeft } from "lucide-react";
@@ -8,6 +9,14 @@ import FormContainer from "./_components/FormContainer";
 function CreateInterview() {
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState();
+  const onHandleInputChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+    console.log("Form Data", formData);
+  };
   return (
     <>
       <div className="mt-10 px-10 pb-20 md:px-24 lg:px-px-44 xl:px-56">
@@ -16,7 +25,7 @@ function CreateInterview() {
           <h2 className="font-bold text-2xl">Create a new interview</h2>
         </div>
         <Progress value={step * 33} className="my-5" />
-        <FormContainer />
+        <FormContainer onHandleInputChange={onHandleInputChange} />
       </div>
     </>
   );
