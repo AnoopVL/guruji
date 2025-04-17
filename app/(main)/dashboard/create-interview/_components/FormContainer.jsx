@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Preahvihear } from "next/font/google";
 import { useState } from "react";
 
-function FormContainer({ onHandleInputChange }) {
+function FormContainer({ onHandleInputChange, GoToNext }) {
   const [interviewType, setInterviewType] = useState([]);
   useEffect(() => {
     if (interviewType) {
@@ -94,7 +94,7 @@ function FormContainer({ onHandleInputChange }) {
           </div>
         </div>
         <div className="flex mt-8 justify-end-safe">
-          <Button>
+          <Button onClick={() => GoToNext()}>
             Generate Questions <ArrowRight />
           </Button>
         </div>
