@@ -85,4 +85,6 @@ format: interviewQuestions=[
   }
 ]
 
-The goal is to create a structured, relevant, and time-optimized interview plan for a {(jobTitle}} role.`;
+The goal is to create a structured, relevant, and time-optimized interview plan for a {(jobTitle}} role.
+I am going to use the json format further, so strictly give the questions only, that too in the json format in output, nothing else.
+Also you can mention in the question itself, how much time should we allocate to that particular question. `;
