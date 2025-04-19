@@ -16,11 +16,6 @@ function QuestionListContainer({ questionList }) {
           </li>
         ))}
       </ul>
-      <div className="flex justify-end mt-10">
-        <Button onClick={() => onFinish()}>
-          Finish <ArrowRight />
-        </Button>
-      </div>
     </div>
   );
 }
