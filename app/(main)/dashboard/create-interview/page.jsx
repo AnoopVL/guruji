@@ -8,11 +8,13 @@ import FormContainer from "./_components/FormContainer";
 import QuestionList from "./_components/QuestionList";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
+import InterviewLink from "./_components/InterviewLink";
 
 function CreateInterview() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState();
+  const [interviewId, setInterviewId] = useState();
   const onHandleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -32,6 +34,11 @@ function CreateInterview() {
     }
     setStep(step + 1);
   };
+
+  const onCreateLink = (interview_id) => {
+    setInterviewId(interview_id);
+    setStep(step + 1);
+  };
   return (
     <>
       <div className="mt-10 px-10 pb-20 md:px-24 lg:px-px-44 xl:px-56">
@@ -46,7 +53,12 @@ function CreateInterview() {
             GoToNext={() => onGoToNext()}
           />
         ) : step == 2 ? (
-          <QuestionList formData={formData} />
+          <QuestionList
+            formData={formData}
+            onCreateLink={(interview_id) => onCreateLink(interview_id)}
+          />
+        ) : step == 3 ? (
+          <InterviewLink interview_id={interviewId} formData={formData} />
         ) : null}
       </div>
     </>

@@ -12,11 +12,13 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Check } from "lucide-react";
 
-function QuestionList({ formData }) {
+function QuestionList({ formData, onCreateLink }) {
   const [loading, setLoading] = useState(false);
   const [questionList, setQuestionList] = useState();
   const [saveLoading, setSaveLoading] = useState(false);
   const [saveFinished, setSaveFinished] = useState(false);
+  const [interviewId, setInterviewId] = useState(null);
+
   const { user } = useUser();
   useEffect(() => {
     if (formData) {
@@ -55,9 +57,15 @@ function QuestionList({ formData }) {
   };
 
   const onFinish = async () => {
+    if (saveFinished) {
+      // Second click — go to next step
+      onCreateLink(interviewId); // trigger the next page
+      return;
+    }
+    // First click — save to Supabase
     setSaveLoading(true);
     setSaveFinished(false);
-    const interview_id = uuidv4();
+    const newInterviewId = uuidv4();
     const { data, error } = await supabase
       .from("interviews")
       .insert([
@@ -65,14 +73,15 @@ function QuestionList({ formData }) {
           ...formData,
           questionList: questionList,
           userEmail: user?.email,
-          interview_id: interview_id,
+          interview_id: newInterviewId,
         },
       ])
       .select();
     setSaveLoading(false);
     setSaveFinished(true);
-    console.log(data);
+    setInterviewId(newInterviewId); // Save for second click
   };
+
   return (
     <>
       <div>
@@ -98,7 +107,7 @@ function QuestionList({ formData }) {
                   <LoaderCircle className="animate-spin mr-2" />
                 ) : saveFinished ? (
                   <>
-                    Finished <Check className="ml-2" />
+                    Create Interview Link and Finish <Check className="ml-2" />
                   </>
                 ) : (
                   <>
