@@ -14,6 +14,7 @@ import { FaPlus } from "react-icons/fa";
 import { SidebarOptions } from "@/services/Constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export function AppSidebar() {
   const path = usePathname();
@@ -23,7 +24,7 @@ export function AppSidebar() {
       <SidebarHeader>
         <div className="flex flex-col space-y-3 justify-center items-center">
           <div className="flex flex-row items-center space-x-1 p-3">
-            <img
+            <Image
               src="gurujiLogoSm.png"
               alt="logo small"
               width={40}

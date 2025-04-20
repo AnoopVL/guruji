@@ -29,13 +29,13 @@ function Login() {
         <div className="flex flex-col items-center space-y-4 border rounded-lg p-4 shadow-md w-full max-w-md">
           <div className="flex flex-row items-center p-3">
             <div className="text-3xl">Get Started with</div>
-            <img
-              src="gurujiLogoSm.png"
+            <Image
+              src="/gurujiLogoSm.png"
               alt="logo small"
               width={40}
               height={40}
             />
-            <div className="text-green-700 text-3xl">GURUJI</div>
+            <div className="text-2xl text-green-700">GURUJI</div>
           </div>
           <div className="flex justify-center">
             <img
