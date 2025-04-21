@@ -25,7 +25,7 @@ export function AppSidebar() {
         <div className="flex flex-col space-y-3 justify-center items-center">
           <div className="flex flex-row items-center space-x-1 p-3">
             <Image
-              src="gurujiLogoSm.png"
+              src="/gurujiLogoSm.png"
               alt="logo small"
               width={40}
               height={40}
