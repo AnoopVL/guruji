@@ -1,30 +1,61 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Image from "next/image";
 import { Clock } from "lucide-react";
 import { Info } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { VideoIcon } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/services/supabaseClient";
 import { useState } from "react";
+import { toast } from "sonner";
+import { InterviewDataContext } from "@/app/context/InterviewDataContext";
+import { Loader2Icon } from "lucide-react";
 
 function Interview() {
   const { interview_id } = useParams();
   const [interviewData, setInterviewData] = useState();
+  const [userName, setUserName] = useState();
+  const [loading, setLoading] = useState(false);
+  const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext);
+  const router = useRouter();
 
   useEffect(() => {
     interview_id && GetInterviewDetails();
   }, [interview_id]);
 
   const GetInterviewDetails = async () => {
+    setLoading(true);
+    try {
+      let { data: interviews, error } = await supabase
+        .from("interviews")
+        .select("jobPosition, jobDescription, type, duration")
+        .eq("interview_id", interview_id);
+      setInterviewData(interviews[0]);
+      setLoading(false);
+      if (interviews?.length == 0) {
+        toast("Incorrect interview link");
+        return;
+      }
+    } catch (error) {
+      setLoading(false);
+      toast("Incorrect interview link");
+    }
+  };
+
+  const onJoinInterview = async () => {
+    setLoading(true);
     let { data: interviews, error } = await supabase
       .from("interviews")
-      .select("jobPosition, jobDescription, type, duration")
+      .select("*")
       .eq("interview_id", interview_id);
-    setInterviewData(interviews[0]);
+    console.log(interviews[0]);
+    setInterviewInfo(interviews[0]);
+    router.push("/interview/" + interview_id + "/start");
+    setLoading(false);
   };
+
   return (
     <div className="px-10 md:px-28 lg:px-48 xl:px-64 mt-10">
       <div className="flex flex-col items-center justify-center border rounded-xl bg-gray-100 p-7 shadow-xl gap-2 md:px-28 lg:px-32 xl:px-52 mb-20">
@@ -51,10 +82,14 @@ function Interview() {
         </h2>
         <div className="w-full mt-4">
           <h2>Enter your full name</h2>
-          <Input placeholder="eg. Anoop Lanjekar" className="bg-white" />
+          <Input
+            placeholder="eg. Anoop Lanjekar"
+            className="bg-white"
+            onChange={(event) => setUserName(event.target.value)}
+          />
         </div>
 
-        <div className="p-4 flex gap-4 rounded-lg bg-green-200 mt-4 w-full">
+        <div className="p-4 flex gap-4 rounded-lg bg-green-200 mt-4 w-full shadow-lg">
           <Info className="text-primary" />
           <div>
             <h2 className="font-bold text-primary">Before you begin</h2>
@@ -71,8 +106,11 @@ function Interview() {
             </ul>
           </div>
         </div>
-        <Button className="w-full mt-4 ">
-          <VideoIcon />
+        <Button
+          className="w-full mt-4 "
+          disabled={loading || !userName}
+          onClick={() => onJoinInterview()}>
+          <VideoIcon /> {loading && <Loader2Icon />}
           Join Interview
         </Button>
       </div>
