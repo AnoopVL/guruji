@@ -4,10 +4,21 @@ import { Mic } from "lucide-react";
 import { Phone } from "lucide-react";
 import { Timer } from "lucide-react";
 import Image from "next/image";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
+import Vapi from "@vapi-ai/web";
 
 function StartInterview() {
   const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext);
+  const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY);
+
+  useEffect(() => {
+    interviewInfo && startCall();
+  }, [interviewInfo]);
+
+  const startCall = () => {
+    if (interviewInfo) {
+    }
+  };
 
   return (
     <div className="p-20 lg:px-48 xl:px-56 bg-gray-200">
