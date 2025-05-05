@@ -103,6 +103,9 @@ Key Guidelines:
     console.log("Call has ended.");
     toast("Interview Ended...");
   });
+  vapi.on("message", (message) => {
+    console.log(message);
+  });
 
   return (
     <div className="p-20 lg:px-48 xl:px-56 bg-gray-200">
