@@ -16,8 +16,11 @@ function StartInterview() {
   }, [interviewInfo]);
 
   const startCall = () => {
-    if (interviewInfo) {
-    }
+    let questionList;
+    interviewInfo?.interviewData?.questionList.forEach(
+      (item, index) => (questionList = item?.question + "," + questionList)
+    );
+    console.log(questionList);
   };
 
   return (
