@@ -1,3 +1,4 @@
+// app/interview/[interview_id]/start/page.jsx
 "use client";
 import { InterviewDataContext } from "@/app/context/InterviewDataContext";
 import { Mic } from "lucide-react";
@@ -6,6 +7,7 @@ import { Timer } from "lucide-react";
 import Image from "next/image";
 import React, { useContext, useEffect } from "react";
 import Vapi from "@vapi-ai/web";
+import AlertConfirmation from "./_components/AlertConfirmation";
 
 function StartInterview() {
   const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext);
@@ -20,7 +22,67 @@ function StartInterview() {
     interviewInfo?.interviewData?.questionList.forEach(
       (item, index) => (questionList = item?.question + "," + questionList)
     );
-    console.log(questionList);
+
+    const assistantOptions = {
+      name: "AI Recruiter",
+      firstMessage:
+        "Hi" +
+        interviewInfo?.userName +
+        ", how are you? Ready for your interview on " +
+        interviewInfo?.interviewData?.jobPosition +
+        "?",
+      transcriber: {
+        provider: "deepgram",
+        model: "nova-2",
+        language: "en-US",
+      },
+      voice: {
+        provider: "playht",
+        voiceId: "jennifer",
+      },
+      model: {
+        provider: "openai",
+        model: "gpt-4",
+        messages: [
+          {
+            role: "system",
+            content:
+              `
+  You are an AI voice assistant conducting interviews.
+Your job is to ask candidates provided interview questions, assess their responses.
+Begin the conversation with a friendly introduction, setting a relaxed yet professional tone. Example:
+"Hey there! Welcome to your ` +
+              interviewInfo?.interviewData?.jobPosition +
+              ` interview. Lets get started with a few questions!"
+Ask one question at a time and wait for the candidates response before proceeding. Keep the questions clear and concise. Below Are the questions ask one by one:
+Questions: ` +
+              questionList +
+              `
+If the candidate struggles, offer hints or rephrase the question without giving away the answer. Example:
+"Need a hint? Think about how React tracks component updates!"
+Provide brief, encouraging feedback after each answer. Example:
+"Nice! Thats a solid answer."
+"Hmm, not quite! Want to try again?"
+Keep the conversation natural and engaging—use casual phrases like "Alright, next up..." or "Lets tackle a tricky one!"
+After 5-7 questions, wrap up the interview smoothly by summarizing their performance. Example:
+"That was great! You handled some tough questions well. Keep sharpening your skills!"
+End on a positive note:
+"Thanks for chatting! Hope to see you crushing projects soon!"
+Key Guidelines:
+- Be friendly, engaging, and witty
+- Keep responses short and natural, like a real conversation
+- Adapt based on the candidates confidence level
+- Ensure the interview remains focused on React
+`.trim(),
+          },
+        ],
+      },
+    };
+    vapi.start(assistantOptions);
+  };
+
+  const stopInterview = () => {
+    vapi.stop();
   };
 
   return (
@@ -56,7 +118,9 @@ function StartInterview() {
 
       <div className="mt-9 flex flex-row gap-8 justify-center">
         <Mic className="bg-blue-400 rounded-full h-12 w-12 p-3 cursor-pointer transform transition-transform hover:scale-110 hover:shadow-lg" />
-        <Phone className="bg-red-400 rounded-full h-12 w-12 p-3 cursor-pointer transform transition-transform hover:scale-110 hover:shadow-lg" />
+        <AlertConfirmation stopInterview={() => stopInterview()}>
+          <Phone className="bg-red-400 rounded-full h-12 w-12 p-3 cursor-pointer transform transition-transform hover:scale-110 hover:shadow-lg" />
+        </AlertConfirmation>
       </div>
 
       <h2 className="text-gray-500 mt-6 justify-center flex">
