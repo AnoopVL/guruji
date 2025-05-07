@@ -9,11 +9,13 @@ import React, { useContext, useEffect, useState } from "react";
 import Vapi from "@vapi-ai/web";
 import AlertConfirmation from "./_components/AlertConfirmation";
 import { toast } from "sonner";
+import axios from "axios";
 
 function StartInterview() {
   const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext);
   const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY);
   const [activeUser, setActiveUser] = useState(false);
+  const [conversation, setConversation] = useState();
 
   useEffect(() => {
     interviewInfo && startCall();
@@ -102,10 +104,19 @@ Key Guidelines:
   vapi.on("call-end", () => {
     console.log("Call has ended.");
     toast("Interview Ended...");
+    GenerateFeedback();
   });
   vapi.on("message", (message) => {
-    console.log(message);
+    console.log(message?.conversation);
+    setConversation(message?.conversation);
   });
+
+  const GenerateFeedback = async () => {
+    const result = await axios.post("api/ai-feedback", {
+      conversation: conversation,
+    });
+    console.log(result?.data);
+  };
 
   return (
     <div className="p-20 lg:px-48 xl:px-56 bg-gray-200">
