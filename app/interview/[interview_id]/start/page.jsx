@@ -10,12 +10,16 @@ import Vapi from "@vapi-ai/web";
 import AlertConfirmation from "./_components/AlertConfirmation";
 import { toast } from "sonner";
 import axios from "axios";
+import { supabase } from "@/services/supabaseClient";
+import { useParams, useRouter } from "next/navigation";
 
 function StartInterview() {
   const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext);
   const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY);
   const [activeUser, setActiveUser] = useState(false);
   const [conversation, setConversation] = useState();
+  const { interview_id } = useParams();
+  const router = useRouter();
 
   useEffect(() => {
     interviewInfo && startCall();
@@ -106,10 +110,30 @@ Key Guidelines:
     toast("Interview Ended...");
     GenerateFeedback();
   });
-  vapi.on("message", (message) => {
-    console.log(message?.conversation);
-    setConversation(message?.conversation);
-  });
+  // vapi.on("message", (message) => {
+  //   console.log(message?.conversation);
+  //   setConversation(message?.conversation);
+  // });
+
+  useEffect(() => {
+    const handleMessage = (message) => {
+      console.log("Message: ", message);
+      if (message?.conversation) {
+        const ConvoString = JSON.stringify(message.conversation);
+        console.log("Conversation String: ", ConvoString);
+        setConversation(ConvoString);
+      }
+    };
+
+    vapi.on("message", handleMessage);
+    return () => {
+      vapi.off("message", handleMessage);
+      vapi.off("call-start", () => console.log("END"));
+      vapi.off("speech-start", () => console.log("END"));
+      vapi.off("speech-end", () => console.log("END"));
+      vapi.off("call-end", () => console.log("END"));
+    };
+  }, []);
 
   const GenerateFeedback = async () => {
     const result = await axios.post("/api/ai-feedback", {
@@ -119,6 +143,21 @@ Key Guidelines:
     const Content = result.data.content;
     const FINAL_CONTENT = Content.replace("```json", "").replace("```", "");
     console.log(FINAL_CONTENT);
+
+    const { data, error } = await supabase
+      .from("interview-feedback")
+      .insert([
+        {
+          userName: interviewInfo?.userName,
+          userEmail: interviewInfo?.userEmail,
+          interview_id: interview_id,
+          feedback: JSON.parse(FINAL_CONTENT),
+          recommended: false,
+        },
+      ])
+      .select();
+    console.log(data);
+    router.push("/interview/completed");
   };
 
   return (
