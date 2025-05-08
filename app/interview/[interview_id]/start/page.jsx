@@ -82,7 +82,7 @@ Key Guidelines:
         ],
       },
     };
-    // vapi.start(assistantOptions);
+    vapi.start(assistantOptions);
   };
 
   const stopInterview = () => {
@@ -112,10 +112,13 @@ Key Guidelines:
   });
 
   const GenerateFeedback = async () => {
-    const result = await axios.post("api/ai-feedback", {
+    const result = await axios.post("/api/ai-feedback", {
       conversation: conversation,
     });
     console.log(result?.data);
+    const Content = result.data.content;
+    const FINAL_CONTENT = Content.replace("```json", "").replace("```", "");
+    console.log(FINAL_CONTENT);
   };
 
   return (
