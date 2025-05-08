@@ -1,3 +1,4 @@
+// app/api/ai-feedback/route.jsx
 import { FEEDBACK_PROMPT } from "@/services/Constants";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
@@ -16,7 +17,7 @@ export async function POST(req) {
     });
 
     const completion = await openai.chat.completions.create({
-      model: "nvidia/llama-3.1-nemotron-70b-instruct:free",
+      model: "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",
       messages: [{ role: "user", content: FINAL_PROMPT }],
       //   response_format: "json",
     });

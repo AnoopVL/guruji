@@ -18,7 +18,7 @@ export async function POST(req) {
     });
 
     const completion = await openai.chat.completions.create({
-      model: "nvidia/llama-3.1-nemotron-70b-instruct:free",
+      model: "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",
       messages: [{ role: "user", content: FINAL_PROMPT }],
       //   response_format: "json",
     });
@@ -30,4 +30,4 @@ export async function POST(req) {
   }
 }
 
-export const API_route = "dfadf";
+// export const API_route = "dfadf";
