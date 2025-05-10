@@ -157,7 +157,7 @@ Key Guidelines:
       ])
       .select();
     console.log(data);
-    router.push("/interview/completed");
+    router.push("/interview/" + interview_id + "/completed");
   };
 
   return (
