@@ -37,7 +37,9 @@ function InterviewCompleted() {
           </h2>
         </div>
         <div className="w-full">
-          <Button className="w-full mt-4">Return to Dashboard</Button>
+          <Button className="w-full mt-4 cursor-pointer">
+            Return to Dashboard
+          </Button>
         </div>
       </div>
     </div>
