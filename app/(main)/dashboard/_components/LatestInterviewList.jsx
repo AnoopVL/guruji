@@ -1,11 +1,31 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FaVideo } from "react-icons/fa6";
+import { supabase } from "@/services/supabaseClient";
+import { useUser } from "@/app/provider";
+import InterviewCard from "./InterviewCard";
 
 function LatestInterviewList() {
   const [interviewList, setInterviewList] = useState([]);
+  const { user } = useUser();
+
+  useEffect(() => {
+    user && GetInterviewList();
+  }, [user]);
+
+  const GetInterviewList = async () => {
+    let { data: interviews, error } = await supabase
+      .from("interviews")
+      .select("*")
+      .eq("userEmail", user?.email)
+      .order("id", { ascending: false })
+      .limit(6);
+    console.log(interviews);
+    setInterviewList(interviews);
+  };
+
   return (
     <>
       <div className="my-5">
@@ -18,6 +38,13 @@ function LatestInterviewList() {
           </div>
           <h2>You don't have any interviews created</h2>
           <Button>+ Create New Interview</Button>
+        </div>
+      )}
+      {interviewList && (
+        <div className="grid grid-cols-2 xl:grid-cols-3 gap-5 ">
+          {interviewList.map((interview, index) => (
+            <InterviewCard interview={interview} key={index} />
+          ))}
         </div>
       )}
     </>
