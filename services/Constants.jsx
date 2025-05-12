@@ -112,5 +112,5 @@ for hire or not with msg. Give me response in JSON format
 }
 
 Give the response in a json format, also give only what is asked in the example format, no need of any other textual response.
-And when you dont get enough conversation, try creating some generic response.
+And when you dont get enough conversation, try creating some generic response. Also give the recommendation in only Yes or No.
 `;
