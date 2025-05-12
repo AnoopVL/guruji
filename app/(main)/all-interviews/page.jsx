@@ -1,3 +1,4 @@
+// app/(main)/all-interviews/page.jsx
 "use client";
 import React, { useEffect } from "react";
 import { useState } from "react";
@@ -41,8 +42,12 @@ function AllInterviews() {
       )}
       {interviewList && (
         <div className="grid grid-cols-2 xl:grid-cols-3 gap-5 p-5">
-          {interviewList.map((interview, index) => (
-            <InterviewCard interview={interview} key={index} />
+          {interviewList?.map((interview, index) => (
+            <InterviewCard
+              interview={interview}
+              key={index}
+              viewDetail={false}
+            />
           ))}
         </div>
       )}

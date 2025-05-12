@@ -1,3 +1,4 @@
+// app/(main)/dashboard/_components/LatestInterviewList.jsx
 "use client";
 import React, { useEffect } from "react";
 import { useState } from "react";
@@ -42,8 +43,12 @@ function LatestInterviewList() {
       )}
       {interviewList && (
         <div className="grid grid-cols-2 xl:grid-cols-3 gap-5 ">
-          {interviewList.map((interview, index) => (
-            <InterviewCard interview={interview} key={index} />
+          {interviewList?.map((interview, index) => (
+            <InterviewCard
+              interview={interview}
+              key={index}
+              viewDetail={false}
+            />
           ))}
         </div>
       )}
