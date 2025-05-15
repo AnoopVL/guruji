@@ -6,6 +6,7 @@ import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 function InterviewCard({ interview, viewDetail }) {
   const url = process.env.NEXT_PUBLIC_HOST_URL + "/" + interview?.interview_id;
@@ -55,18 +56,20 @@ function InterviewCard({ interview, viewDetail }) {
         <div>
           <div className="flex items-center justify-between">
             <h2 className="mt-2 text-sm">{interview?.duration}</h2>
-            {/* <span>
-              {interview["interview-feedback"]?.length ?? 0} Candidates
-            </span> */}
           </div>
-          <div className="flex gap-3 w-full mt-5">
-            <Button
-              className="flex-1 flex items-center justify-center gap-2 cursor-pointer"
-              variant="outline">
-              <ArrowRight className="w-4 h-4" />
-              View Details
-            </Button>
-          </div>
+          <Link
+            href={
+              "/schedule-interview/" + interview?.interview_id + "/details"
+            }>
+            <div className="flex gap-3 w-full mt-5">
+              <Button
+                className="flex-1 flex items-center justify-center gap-2 cursor-pointer"
+                variant="outline">
+                <ArrowRight className="w-4 h-4" />
+                View Details
+              </Button>
+            </div>
+          </Link>
         </div>
       )}
     </div>
