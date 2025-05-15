@@ -55,9 +55,9 @@ function InterviewCard({ interview, viewDetail }) {
         <div>
           <div className="flex items-center justify-between">
             <h2 className="mt-2 text-sm">{interview?.duration}</h2>
-            <span>
+            {/* <span>
               {interview["interview-feedback"]?.length ?? 0} Candidates
-            </span>
+            </span> */}
           </div>
           <div className="flex gap-3 w-full mt-5">
             <Button
