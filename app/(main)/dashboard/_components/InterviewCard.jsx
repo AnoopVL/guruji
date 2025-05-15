@@ -13,10 +13,6 @@ function InterviewCard({ interview, viewDetail }) {
     navigator.clipboard.writeText(url);
     toast("Link copied.");
   };
-
-  console.log("test");
-  console.log(interview["interview-feedback"]);
-
   const onSend = () => {
     const subject = encodeURIComponent("Interview Link from Guruji");
     const body = encodeURIComponent(

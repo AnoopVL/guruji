@@ -15,7 +15,6 @@ function ScheduleInterview() {
   useEffect(() => {
     user && GetInterviewList();
   }, [user]);
-  // To-do: 1. fetch only the interviews where feedback is available
   //        2. Number of candidates who have attended a particular interview
   const GetInterviewList = async () => {
     let { data: interviews, error } = await supabase
@@ -44,13 +43,15 @@ function ScheduleInterview() {
       )}
       {interviewList && (
         <div className="grid grid-cols-2 xl:grid-cols-3 gap-5 p-5">
-          {interviewList?.map((interview, index) => (
-            <InterviewCard
-              interview={interview}
-              key={index}
-              viewDetail={true}
-            />
-          ))}
+          {interviewList
+            .filter((interview) => interview["interview-feedback"] !== null)
+            .map((interview, index) => (
+              <InterviewCard
+                interview={interview}
+                key={index}
+                viewDetail={true}
+              />
+            ))}
         </div>
       )}
     </div>
