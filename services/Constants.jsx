@@ -87,7 +87,8 @@ format: interviewQuestions=[
 
 The goal is to create a structured, relevant, and time-optimized interview plan for a {(jobTitle}} role.
 I am going to use the json format further, so strictly give the questions only, that too in the json format in output, nothing else.
-Also you can mention in the question itself, how much time should we allocate to that particular question. `;
+Also you can mention in the question itself, how much time should we allocate to that particular question. Try avoiding asking questions where user has to code something(just ask for their approach to solve that problem).
+`;
 
 export const FEEDBACK_PROMPT = `
 {{conversation}}
@@ -103,7 +104,8 @@ for hire or not with msg. Give me response in JSON format
             techicalSkills:5,
             communication:6,
             problemSolving:4,
-            experince:7
+            experince:7,
+            overall:6
         },
         summery:<in 3 Line>,
         Recommendation:'',
