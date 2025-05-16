@@ -1,8 +1,7 @@
 // app/(main)/schedule-interview/_components/CandidateList.jsx
 import React from "react";
 import moment from "moment";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import CandidateFeedbackDialog from "./CandidateFeedbackDialog";
 
 function CandidateList({ candidateList }) {
   // Color based on technicalSkills rating
@@ -44,9 +43,7 @@ function CandidateList({ candidateList }) {
                 </div>
                 <div className="flex gap-3 items-center">
                   <h2 className={`font-bold ${colorClass}`}>{score}/10</h2>
-                  <Button variant="outline" className="cursor-pointer">
-                    View Report <ArrowRight className="ml-1" />
-                  </Button>
+                  <CandidateFeedbackDialog candidate={candidate} />
                 </div>
               </div>
             </div>
