@@ -7,7 +7,7 @@ import { Tag } from "lucide-react";
 
 function InterviewDetailContainer({ interviewDetail }) {
   return (
-    <div className="mt-5 p-5 rounded-xl bg-gray-100 shadow-lg">
+    <div className="mt-5 p-5 rounded-xl bg-gray-100 shadow-sm">
       <h2 className="font-semibold text-lg">{interviewDetail?.jobPosition}</h2>
       <div className="flex items-center justify-between mt-5">
         <div className="flex flex-col gap-0.5">
