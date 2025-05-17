@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Image from "next/image";
 import { supabase } from "@/services/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { FcGoogle } from "react-icons/fc";
