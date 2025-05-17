@@ -1,3 +1,4 @@
+// app/auth/page.jsx
 "use client";
 import React from "react";
 import Image from "next/image";
@@ -7,9 +8,11 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 
 function Login() {
+  const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard`;
   const SignInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
+      options: { redirectTo },
     });
     if (error) {
       console.error("Error", error.message);
@@ -18,6 +21,7 @@ function Login() {
   const SignInWithGithub = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
+      options: { redirectTo },
     });
     if (error) {
       console.error("Error", error.message);
@@ -47,7 +51,6 @@ function Login() {
             />
           </div>
           {/* auth div  */}
-
           <Button
             onClick={SignInWithGoogle}
             variant="outline"
@@ -56,7 +59,6 @@ function Login() {
             Login with Google
           </Button>
           <div className="text-center text-sm text-muted-foreground">or</div>
-
           <Button
             onClick={SignInWithGithub}
             variant="outline"

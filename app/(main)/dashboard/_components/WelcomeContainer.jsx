@@ -3,16 +3,10 @@
 import React from "react";
 import { useUser } from "@/app/provider";
 import Image from "next/image";
+import UserMenu from "./UserMenu";
 
 function WelcomeContainer() {
   const { user } = useUser();
-  // if (user == null) {
-  //   console.log("no user");
-  // } else {
-  //   console.log(user.name);
-  //   console.log(user.email);
-  //   console.log(user.picture);
-  // }
 
   return (
     <>
@@ -23,16 +17,7 @@ function WelcomeContainer() {
             AI-Driven interviews are just a few clicks away.
           </h2>
         </div>
-        {/* inside next.config.mjs make changes for domain 1.11. */}
-        {user && (
-          <Image
-            src={user?.picture}
-            alt="userAvatar"
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
-        )}
+        {user && <UserMenu />}
       </div>
     </>
   );

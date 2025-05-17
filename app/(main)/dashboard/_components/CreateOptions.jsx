@@ -23,17 +23,27 @@ function CreateOptions() {
       </Link>
 
       {/* Card 2 */}
-      <div
-        className="flex flex-col bg-gray-100 w-full p-10 rounded-2xl space-y-4 
-                      hover:bg-gray-200 hover:shadow-lg transition">
-        <div className="w-12 h-12 bg-green-100 rounded-lg inline-flex items-center justify-center">
-          <FaPhoneAlt className="text-green-700 w-6 h-6" />
+      <div className="relative group">
+        <div
+          className="flex flex-col bg-gray-100 w-full p-10 rounded-2xl space-y-4 
+               hover:bg-gray-200 hover:shadow-lg transition">
+          <div className="w-12 h-12 bg-green-100 rounded-lg inline-flex items-center justify-center">
+            <FaPhoneAlt className="text-green-700 w-6 h-6" />
+          </div>
+
+          <h2 className="font-bold">Create Phone Screening Call</h2>
+          <p className="text-gray-500">
+            Schedule phone screening calls with potential candidates.
+          </p>
         </div>
 
-        <h2 className="font-bold">Create Phone Screening Call</h2>
-        <p className="text-gray-500">
-          Schedule phone screening calls with potential candidates.
-        </p>
+        {/* Overlay on hover */}
+        <div
+          className="absolute inset-0 bg-black bg-opacity-50 rounded-2xl 
+               flex items-center justify-center opacity-0 group-hover:opacity-100 
+               transition duration-300 text-white font-semibold text-lg z-10">
+          Feature coming soon
+        </div>
       </div>
     </div>
   );

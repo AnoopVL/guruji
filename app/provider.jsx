@@ -1,13 +1,15 @@
 // app/provider.jsx
 "use client";
 import { useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/services/supabaseClient";
 import { UserDetailContext } from "./context/UserDetailContext";
 
 function Provider({ children }) {
   const [user, setUser] = useState(null);
   const router = useRouter();
+  const pathname = usePathname();
+
   useEffect(() => {
     CreateNewUser();
   }, []);
@@ -16,18 +18,26 @@ function Provider({ children }) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
+
+    const publicRoutes = ["/", "/auth"]; // Allow these without login
+
     if (!user) {
-      router.replace("/auth");
+      if (!publicRoutes.includes(pathname)) {
+        router.replace("/auth"); // Only redirect from protected routes
+      }
       return;
     }
+
     const { data: Users, error: fetchError } = await supabase
       .from("Users")
       .select("*")
       .eq("email", user.email);
+
     if (fetchError) {
       console.error("Error fetching user:", fetchError);
       return;
     }
+
     if (Users?.length === 0) {
       const { data: newUser, error: insertError } = await supabase
         .from("Users")
@@ -39,6 +49,7 @@ function Provider({ children }) {
           },
         ])
         .select();
+
       if (insertError) {
         console.error("Error inserting user:", insertError);
         return;
@@ -47,18 +58,12 @@ function Provider({ children }) {
     } else {
       setUser(Users[0]);
     }
-
-    // if (pathname !== "/dashboard") {
-    //   router.replace("/dashboard");
-    // }
   };
 
   return (
-    <>
-      <UserDetailContext.Provider value={{ user, setUser }}>
-        {children}
-      </UserDetailContext.Provider>
-    </>
+    <UserDetailContext.Provider value={{ user, setUser }}>
+      {children}
+    </UserDetailContext.Provider>
   );
 }
 
