@@ -9,8 +9,10 @@ import QuestionList from "./_components/QuestionList";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import InterviewLink from "./_components/InterviewLink";
+import { useUser } from "@/app/provider";
 
 function CreateInterview() {
+  const { user } = useUser();
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState();
@@ -23,6 +25,10 @@ function CreateInterview() {
     console.log("Form Data", formData);
   };
   const onGoToNext = () => {
+    if (user?.credits <= 0) {
+      toast("Insufficient credits!");
+      return;
+    }
     if (
       !formData?.jobPosition ||
       !formData?.jobDescription ||
