@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
   eslint: {
     ignoreDuringBuilds: true,
   },
 
   images: {
+    // remove 'unoptimized: true' if hosting on vercel
     unoptimized: true,
     domains: ["lh3.googleusercontent.com"],
     remotePatterns: [
