@@ -1,8 +1,16 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 function InterviewCompleted() {
+  const router = useRouter();
+
+  const returnToDashboard = () => {
+    router.push("/dashboard");
+  };
+
   return (
     <div className="px-10 md:px-28 lg:px-48 xl:px-64 mt-10">
       <div className="flex flex-col items-center justify-center border rounded-xl bg-gray-100 p-7 shadow-xl gap-2 md:px-28 lg:px-32 xl:px-52 mb-20">
@@ -37,7 +45,9 @@ function InterviewCompleted() {
           </h2>
         </div>
         <div className="w-full">
-          <Button className="w-full mt-4 cursor-pointer">
+          <Button
+            className="w-full mt-4 cursor-pointer"
+            onClick={returnToDashboard}>
             Return to Dashboard
           </Button>
         </div>
