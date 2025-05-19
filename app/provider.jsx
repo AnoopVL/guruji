@@ -19,11 +19,15 @@ function Provider({ children }) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    const publicRoutes = ["/", "/auth"]; // Allow these without login
+    const publicRoutes = ["/", "/auth", "/interview"];
+
+    const isPublicRoute = publicRoutes.some(
+      (route) => pathname === route || pathname.startsWith(route + "/")
+    );
 
     if (!user) {
-      if (!publicRoutes.includes(pathname)) {
-        router.replace("/auth"); // Only redirect from protected routes
+      if (!isPublicRoute) {
+        router.replace("/auth");
       }
       return;
     }
