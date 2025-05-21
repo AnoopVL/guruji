@@ -48,6 +48,7 @@ jobs:
       - name: Restart on EC2
         run: |
           ssh -i key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.DEV_EC2_PUBLIC_IP }} << 'EOF'
+          export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.10.0/bin
           cd ~/guruji
           mv .env.dev .env.local
           pm2 restart guruji-dev
