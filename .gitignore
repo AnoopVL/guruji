@@ -10,6 +10,7 @@
 !.yarn/releases
 !.yarn/versions
 TODO.md
+anoop.pem:Zone.Identifier
 
 # testing
 /coverage

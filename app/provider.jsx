@@ -20,7 +20,6 @@ function Provider({ children }) {
     } = await supabase.auth.getUser();
 
     const publicRoutes = ["/", "/auth", "/interview"];
-
     const isPublicRoute = publicRoutes.some(
       (route) => pathname === route || pathname.startsWith(route + "/")
     );
@@ -30,6 +29,11 @@ function Provider({ children }) {
         router.replace("/auth");
       }
       return;
+    }
+
+    // If the user is already logged in and is on a public route, redirect to /dashboard
+    if (user && ["/", "/auth"].includes(pathname)) {
+      router.replace("/dashboard");
     }
 
     const { data: Users, error: fetchError } = await supabase
@@ -72,7 +76,6 @@ function Provider({ children }) {
 }
 
 export default Provider;
-
 export const useUser = () => {
   const context = useContext(UserDetailContext);
   return context;
