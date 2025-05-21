@@ -1,0 +1,56 @@
+name: Dev Deploy to EC2
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.11.0
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Generate .env.dev
+        run: echo "$DEV_ENV_FILE" > .env.dev
+        env:
+          DEV_ENV_FILE: ${{ secrets.DEV_ENV_FILE }}
+
+      - name: Build (dev)
+        run: pnpm run build:dev
+
+      - name: Save EC2 Key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+
+      - name: Upload build to EC2
+        run: |
+          rsync -azP -e "ssh -i key.pem -o StrictHostKeyChecking=no" \
+            .next public package.json pnpm-lock.yaml .env.dev \
+            ubuntu@${{ secrets.DEV_EC2_PUBLIC_IP }}:~/guruji/
+
+      - name: Restart on EC2
+        run: |
+          ssh -i key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.DEV_EC2_PUBLIC_IP }} << 'EOF'
+          cd ~/guruji
+          pnpm install --prod
+          mv .env.dev .env.local
+          pm2 restart guruji-dev
+          EOF
