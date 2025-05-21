@@ -49,7 +49,6 @@ jobs:
         run: |
           ssh -i key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.DEV_EC2_PUBLIC_IP }} << 'EOF'
           cd ~/guruji
-          pnpm install --prod
           mv .env.dev .env.local
           pm2 restart guruji-dev
           EOF
