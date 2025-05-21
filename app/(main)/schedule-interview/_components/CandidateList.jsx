@@ -19,8 +19,7 @@ function CandidateList({ candidateList }) {
       <div className="flex flex-col gap-3">
         {candidateList?.map((candidate, index) => {
           // Fallback score if not present
-          const score =
-            candidate?.feedback?.feedback?.rating?.technicalSkills ?? 0;
+          const score = candidate?.feedback?.feedback?.rating?.overall ?? 0;
           const colorClass = getColorForScore(score);
 
           return (

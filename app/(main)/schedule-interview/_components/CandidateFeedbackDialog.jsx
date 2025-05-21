@@ -28,7 +28,7 @@ function CandidateFeedbackDialog({ candidate }) {
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
-  const score = candidate?.feedback?.feedback?.rating?.technicalSkills ?? 0;
+  const score = candidate?.feedback?.feedback?.rating?.overall ?? 0;
   const colorClass = getColorForScore(score);
   return (
     <Dialog>
