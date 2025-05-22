@@ -8,8 +8,17 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 
 function Login() {
-  const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard`;
+  // Use window.location.origin to get the current domain dynamically
+  const getRedirectUrl = () => {
+    if (typeof window !== "undefined") {
+      return `${window.location.origin}/dashboard`;
+    }
+    // Fallback for SSR (though this component is client-side)
+    return `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard`;
+  };
+
   const SignInWithGoogle = async () => {
+    const redirectTo = getRedirectUrl();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo },
@@ -18,7 +27,9 @@ function Login() {
       console.error("Error", error.message);
     }
   };
+
   const SignInWithGithub = async () => {
+    const redirectTo = getRedirectUrl();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: { redirectTo },
@@ -27,6 +38,7 @@ function Login() {
       console.error("Error", error.message);
     }
   };
+
   return (
     <>
       <div className="flex flex-col justify-center h-screen items-center ">
