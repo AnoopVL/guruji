@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { FaVideo } from "react-icons/fa6";
 import InterviewCard from "../dashboard/_components/InterviewCard";
 import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "sonner"; // Make sure to import toast
+import { toast } from "sonner";
 
 function ScheduleInterview() {
   const [interviewList, setInterviewList] = useState([]);
@@ -41,14 +41,7 @@ function ScheduleInterview() {
         toast.error("Failed to fetch interviews.");
         return;
       }
-      const interviewsWithFeedback =
-        interviews?.filter(
-          (interview) =>
-            interview["interview-feedback"] &&
-            interview["interview-feedback"].length > 0
-        ) || [];
-
-      setInterviewList(interviewsWithFeedback);
+      setInterviewList(interviews || []);
     } catch (err) {
       console.error("Unexpected error:", err);
       toast.error("An unexpected error occurred.");

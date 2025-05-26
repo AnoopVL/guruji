@@ -42,7 +42,10 @@ function InterviewCard({ interview, viewDetail, onDelete }) {
             <h2 className="mt-2 text-sm flex justify-between w-full">
               <span>{interview?.duration}</span>
               <span>
-                {interview?.["interview-feedback"]?.length} Candidates
+                {(() => {
+                  const count = interview?.["interview-feedback"]?.length || 0;
+                  return `${count} Candidate${count !== 1 ? "s" : ""}`;
+                })()}
               </span>
             </h2>
           </div>
