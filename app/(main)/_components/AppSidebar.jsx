@@ -15,9 +15,11 @@ import { SidebarOptions } from "@/services/Constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export function AppSidebar() {
   const path = usePathname();
+  const router = useRouter();
 
   return (
     <Sidebar>
@@ -32,7 +34,14 @@ export function AppSidebar() {
             />
             <div className="text-2xl text-green-700">GURUJI</div>
           </div>
-          <Button variant="default">
+          <Button
+            variant="default"
+            className="cursor-pointer"
+            onClick={() =>
+              router.push(
+                `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard/create-interview`
+              )
+            }>
             <FaPlus />
             Create New Interview
           </Button>
@@ -63,8 +72,11 @@ export function AppSidebar() {
           ))}
         </SidebarGroup>
       </SidebarContent>
-
-      <SidebarFooter />
+      <SidebarFooter className="border-t border-border/50 p-4">
+        <div className="text-xs text-center text-muted-foreground">
+          © 2025 Guruji AI
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }
