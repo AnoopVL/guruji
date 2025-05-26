@@ -83,7 +83,7 @@ function InterviewCard({ interview, viewDetail, onDelete }) {
               "/schedule-interview/" + interview?.interview_id + "/details"
             }>
             <Button
-              className="w-full flex items-center justify-center gap-2 transition-colors hover:bg-primary/90 dark:hover:bg-primary/90"
+              className="w-full flex items-center justify-center gap-2 transition-colors hover:bg-primary/90 dark:hover:bg-primary/90 cursor-pointer"
               variant="default">
               <span>View Details</span>
               <ArrowRight className="w-4 h-4" />
@@ -93,13 +93,13 @@ function InterviewCard({ interview, viewDetail, onDelete }) {
           <div className="flex flex-col sm:flex-row gap-3 w-full">
             <Button
               variant="outline"
-              className="flex-1 flex items-center justify-center gap-2 hover:bg-accent/80 transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 hover:bg-accent/80 transition-colors cursor-pointer"
               onClick={copyLink}>
               <Copy className="w-4 h-4" />
               <span>Copy link</span>
             </Button>
             <Button
-              className="flex-1 flex items-center justify-center gap-2 transition-colors hover:bg-primary/90 dark:hover:bg-primary/90"
+              className="flex-1 flex items-center justify-center gap-2 transition-colors hover:bg-primary/90 dark:hover:bg-primary/90 cursor-pointer"
               onClick={onSend}>
               <Mail className="w-4 h-4" />
               <span>Send mail</span>

@@ -25,7 +25,7 @@ function CandidateList({ candidateList }) {
           return (
             <div
               key={index}
-              className="p-5 flex items-center bg-gray-100 rounded-lg shadow-sm">
+              className="p-5 flex items-center bg-white rounded-lg shadow-sm border border-gray-200">
               <h2 className="bg-primary font-bold text-white rounded-full p-3 px-4.5 mr-3">
                 {candidate.userName[0]}
               </h2>

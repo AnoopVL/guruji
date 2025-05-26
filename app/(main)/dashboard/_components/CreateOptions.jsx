@@ -1,48 +1,57 @@
-// app/(main)/dashboard/_components/CreateOptions.jsx
+"use client";
 import React from "react";
-import { FaVideo } from "react-icons/fa6";
-import { FaPhoneAlt } from "react-icons/fa";
+import { Video, Phone } from "lucide-react";
 import Link from "next/link";
 
 function CreateOptions() {
   return (
-    <div className="flex flex-row justify-between p-5 space-x-20">
-      {/* Card 1 */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-5">
+      {/* Create Interview Card */}
       <Link
-        href={"dashboard/create-interview"}
-        className="flex flex-col bg-gray-100 w-full p-10 rounded-2xl space-y-4 
-                      hover:bg-gray-200 hover:shadow-lg transition cursor-pointer">
-        <div className="w-12 h-12 bg-green-100 rounded-lg inline-flex items-center justify-center">
-          <FaVideo className="text-green-700 w-6 h-6" />
-        </div>
-
-        <h2 className="font-bold">Create New Interview</h2>
-        <p className="text-gray-500">
-          Create AI interviews and schedule them with candidates.
-        </p>
-      </Link>
-
-      {/* Card 2 */}
-      <div className="relative group">
-        <div
-          className="flex flex-col bg-gray-100 w-full p-10 rounded-2xl space-y-4 
-               hover:bg-gray-200 hover:shadow-lg transition">
-          <div className="w-12 h-12 bg-green-100 rounded-lg inline-flex items-center justify-center">
-            <FaPhoneAlt className="text-green-700 w-6 h-6" />
+        href="dashboard/create-interview"
+        className="group relative overflow-hidden backdrop-blur-sm bg-card/80 dark:bg-card/70 rounded-xl border border-border/50 p-6 transition-all duration-200 hover:shadow-lg hover:border-border/80">
+        <div className="relative z-10 flex flex-col space-y-4">
+          <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/30 text-primary dark:from-primary/20 dark:to-primary/40">
+            <Video className="h-6 w-6" />
           </div>
 
-          <h2 className="font-bold">Create Phone Screening Call</h2>
-          <p className="text-gray-500">
-            Schedule phone screening calls with potential candidates.
-          </p>
+          <div className="space-y-2">
+            <h2 className="text-xl font-semibold text-card-foreground">
+              Create New Interview
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Create AI interviews and schedule them with candidates.
+            </p>
+          </div>
         </div>
 
-        {/* Overlay on hover */}
-        <div
-          className="absolute inset-0 bg-black bg-opacity-50 rounded-2xl 
-               flex items-center justify-center opacity-0 group-hover:opacity-100 
-               transition duration-300 text-white font-semibold text-lg z-10">
-          Feature coming soon
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent dark:from-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      </Link>
+
+      {/* Phone Screening Card */}
+      <div className="relative group">
+        <div className="overflow-hidden backdrop-blur-sm bg-card/80 dark:bg-card/70 rounded-xl border border-border/50 p-6">
+          <div className="relative z-10 flex flex-col space-y-4">
+            <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/30 text-primary dark:from-primary/20 dark:to-primary/40">
+              <Phone className="h-6 w-6" />
+            </div>
+
+            <div className="space-y-2">
+              <h2 className="text-xl font-semibold text-card-foreground">
+                Create Phone Screening Call
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Schedule phone screening calls with potential candidates.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Coming Soon Overlay */}
+        <div className="absolute inset-0 backdrop-blur-[2px] bg-background/80 dark:bg-background/90 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+          <span className="text-lg font-medium text-primary animate-in fade-in slide-in-from-bottom-4 duration-300">
+            Feature coming soon
+          </span>
         </div>
       </div>
     </div>
