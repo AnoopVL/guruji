@@ -29,5 +29,3 @@ export async function POST(req) {
     return NextResponse.json(error);
   }
 }
-
-// export const API_route = "dfadf";

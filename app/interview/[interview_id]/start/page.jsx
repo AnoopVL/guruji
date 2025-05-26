@@ -45,8 +45,11 @@ function StartInterview() {
         language: "en-US",
       },
       voice: {
-        provider: "playht",
-        voiceId: "jennifer",
+        provider: "11labs",
+        voiceId: "6MoEUz34rbRrmmyxgRm4", // Manav
+        similarityBoost: 0.75,
+        stability: 0.5,
+        model: "eleven_turbo_v2_5",
       },
       model: {
         provider: "openai",

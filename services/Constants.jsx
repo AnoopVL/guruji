@@ -115,6 +115,8 @@ for hire or not with msg. Give me response in JSON format
 
 Give the response in a json format, also give only what is asked in the example format, no need of any other textual response.
 And when you dont get enough conversation, try creating some generic response. Also give the recommendation in only Yes or No.
-When you get no response from the user in the interview, don't generate a generic response give 0 rating to all aspects and give 
-recommendation as 'No' and in summary mention as 'No response from the candidate'.
+
+When you get very less response or no response from the user in the interview, don't generate a generic response give 0 rating to all aspects.  
+For those interviews with very less response or no response from the user give recommendation as "No".
+For those interviews with very less response or no response from the user give summary as "No response from the user, need further evaluation".
 `;
