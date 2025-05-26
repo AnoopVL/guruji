@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { MoreVertical } from "lucide-react";
 
 function InterviewCard({ interview, viewDetail }) {
   const url = process.env.NEXT_PUBLIC_HOST_URL + "/" + interview?.interview_id;
@@ -26,12 +27,40 @@ function InterviewCard({ interview, viewDetail }) {
     <div className="p-5 bg-gray-100 rounded-lg border">
       <div className="flex items-center justify-between">
         <div className="h-[40px] w-[40px] bg-primary rounded-full"></div>
-        <h2 className="text-sm">
-          {moment(interview?.created_at).format("DD MMM YYYY")}
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm">
+            {moment(interview?.created_at).format("DD MMM YYYY")}
+          </h2>
+          <MoreVertical className="w-5 h-5 cursor-pointer" />
+        </div>
       </div>
+
       <h2 className="mt-3 font-semibold text-lg">{interview?.jobPosition}</h2>
-      {!viewDetail ? (
+      {viewDetail ? (
+        <div>
+          <div className="flex items-center justify-between">
+            <h2 className="mt-2 text-sm flex justify-between w-full">
+              <span>{interview?.duration}</span>
+              <span>
+                {interview?.["interview-feedback"]?.length} Candidates
+              </span>
+            </h2>
+          </div>
+          <Link
+            href={
+              "/schedule-interview/" + interview?.interview_id + "/details"
+            }>
+            <div className="flex gap-3 w-full mt-5">
+              <Button
+                className="flex-1 flex items-center justify-center gap-2 cursor-pointer"
+                variant="outline">
+                <ArrowRight className="w-4 h-4" />
+                View Details
+              </Button>
+            </div>
+          </Link>
+        </div>
+      ) : (
         <div>
           <div className="flex items-center justify-between">
             <h2 className="mt-2 text-sm">{interview?.duration}</h2>
@@ -51,25 +80,6 @@ function InterviewCard({ interview, viewDetail }) {
               Send
             </Button>
           </div>
-        </div>
-      ) : (
-        <div>
-          <div className="flex items-center justify-between">
-            <h2 className="mt-2 text-sm">{interview?.duration}</h2>
-          </div>
-          <Link
-            href={
-              "/schedule-interview/" + interview?.interview_id + "/details"
-            }>
-            <div className="flex gap-3 w-full mt-5">
-              <Button
-                className="flex-1 flex items-center justify-center gap-2 cursor-pointer"
-                variant="outline">
-                <ArrowRight className="w-4 h-4" />
-                View Details
-              </Button>
-            </div>
-          </Link>
         </div>
       )}
     </div>

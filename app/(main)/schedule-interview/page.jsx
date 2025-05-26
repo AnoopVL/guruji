@@ -15,7 +15,6 @@ function ScheduleInterview() {
   useEffect(() => {
     user && GetInterviewList();
   }, [user]);
-  //        2. Number of candidates who have attended a particular interview
   const GetInterviewList = async () => {
     let { data: interviews, error } = await supabase
       .from("interviews")
@@ -44,7 +43,7 @@ function ScheduleInterview() {
       {interviewList && (
         <div className="grid grid-cols-2 xl:grid-cols-3 gap-5 p-5">
           {interviewList
-            .filter((interview) => interview["interview-feedback"] !== null)
+            .filter((interview) => interview["interview-feedback"]?.length > 0)
             .map((interview, index) => (
               <InterviewCard
                 interview={interview}
