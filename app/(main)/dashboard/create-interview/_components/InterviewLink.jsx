@@ -59,12 +59,11 @@ function InterviewLink({ interview_id, formData }) {
           <div className="flex gap-5">
             <h2 className="text-sm text-gray-500 flex items-center gap-2">
               <Clock className="h-4 w-4" />
-              30 Min {formData?.duration}
+              {formData?.duration}
             </h2>
-            <h2 className="text-sm text-gray-500 flex items-center gap-2">
+            {/* <h2 className="text-sm text-gray-500 flex items-center gap-2">
               <List className="h-4 w-4" />
-              10 Questions
-            </h2>
+            </h2> */}
           </div>
         </div>
         <div className="w-full mt-10 p-7 rounded-xl bg-gray-100">
