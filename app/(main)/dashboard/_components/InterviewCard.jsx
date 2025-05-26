@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { MoreVertical } from "lucide-react";
+import InterviewCardMenu from "./InterviewCardMenu";
 
-function InterviewCard({ interview, viewDetail }) {
+function InterviewCard({ interview, viewDetail, onDelete }) {
   const url = process.env.NEXT_PUBLIC_HOST_URL + "/" + interview?.interview_id;
   const copyLink = () => {
     navigator.clipboard.writeText(url);
@@ -31,7 +31,7 @@ function InterviewCard({ interview, viewDetail }) {
           <h2 className="text-sm">
             {moment(interview?.created_at).format("DD MMM YYYY")}
           </h2>
-          <MoreVertical className="w-5 h-5 cursor-pointer" />
+          <InterviewCardMenu interview={interview} onDelete={onDelete} />
         </div>
       </div>
 

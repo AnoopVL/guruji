@@ -7,6 +7,7 @@ import { FaVideo } from "react-icons/fa6";
 import { supabase } from "@/services/supabaseClient";
 import { useUser } from "@/app/provider";
 import InterviewCard from "../dashboard/_components/InterviewCard";
+import { motion, AnimatePresence } from "framer-motion";
 
 function AllInterviews() {
   const [interviewList, setInterviewList] = useState([]);
@@ -26,6 +27,10 @@ function AllInterviews() {
     setInterviewList(interviews);
   };
 
+  const handleDelete = (id) => {
+    setInterviewList((prev) => prev.filter((i) => i.id !== id));
+  };
+
   return (
     <>
       <div className="my-5">
@@ -42,13 +47,22 @@ function AllInterviews() {
       )}
       {interviewList && (
         <div className="grid grid-cols-2 xl:grid-cols-3 gap-5 p-5">
-          {interviewList?.map((interview, index) => (
-            <InterviewCard
-              interview={interview}
-              key={index}
-              viewDetail={false}
-            />
-          ))}
+          <AnimatePresence>
+            {interviewList.map((interview) => (
+              <motion.div
+                key={interview.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}>
+                <InterviewCard
+                  interview={interview}
+                  viewDetail={false}
+                  onDelete={handleDelete}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       )}
     </>

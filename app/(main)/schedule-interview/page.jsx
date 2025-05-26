@@ -7,6 +7,8 @@ import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { FaVideo } from "react-icons/fa6";
 import InterviewCard from "../dashboard/_components/InterviewCard";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner"; // Make sure to import toast
 
 function ScheduleInterview() {
   const [interviewList, setInterviewList] = useState([]);
@@ -15,17 +17,48 @@ function ScheduleInterview() {
   useEffect(() => {
     user && GetInterviewList();
   }, [user]);
+
   const GetInterviewList = async () => {
-    let { data: interviews, error } = await supabase
-      .from("interviews")
-      .select(
-        "jobPosition, duration, interview_id, created_at, interview-feedback(userEmail)"
-      )
-      .eq("userEmail", user?.email)
-      .order("id", { ascending: false });
-    console.log(interviews);
-    setInterviewList(interviews);
+    try {
+      let { data: interviews, error } = await supabase
+        .from("interviews")
+        .select(
+          `
+          id, 
+          jobPosition, 
+          duration, 
+          interview_id, 
+          created_at, 
+          userEmail,
+          "interview-feedback"(userEmail)
+        `
+        )
+        .eq("userEmail", user?.email)
+        .order("id", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching interviews:", error);
+        toast.error("Failed to fetch interviews.");
+        return;
+      }
+      const interviewsWithFeedback =
+        interviews?.filter(
+          (interview) =>
+            interview["interview-feedback"] &&
+            interview["interview-feedback"].length > 0
+        ) || [];
+
+      setInterviewList(interviewsWithFeedback);
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      toast.error("An unexpected error occurred.");
+    }
   };
+
+  const handleDelete = (id) => {
+    setInterviewList((prev) => prev.filter((i) => i.id !== id));
+  };
+
   return (
     <div className="p-5">
       <h2 className="text-xl font-bold">
@@ -40,17 +73,24 @@ function ScheduleInterview() {
           <Button>+ Create New Interview</Button>
         </div>
       )}
-      {interviewList && (
+      {interviewList && interviewList.length > 0 && (
         <div className="grid grid-cols-2 xl:grid-cols-3 gap-5 p-5">
-          {interviewList
-            .filter((interview) => interview["interview-feedback"]?.length > 0)
-            .map((interview, index) => (
-              <InterviewCard
-                interview={interview}
-                key={index}
-                viewDetail={true}
-              />
+          <AnimatePresence>
+            {interviewList.map((interview) => (
+              <motion.div
+                key={interview.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}>
+                <InterviewCard
+                  interview={interview}
+                  viewDetail={true}
+                  onDelete={handleDelete}
+                />
+              </motion.div>
             ))}
+          </AnimatePresence>
         </div>
       )}
     </div>
