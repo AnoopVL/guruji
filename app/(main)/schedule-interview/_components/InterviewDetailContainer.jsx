@@ -71,7 +71,7 @@ function InterviewDetailContainer({ interviewDetail }) {
       {/* Job Description Section */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-primary rounded-lg">
+          <div className="relative z-10 p-2 bg-primary rounded-lg">
             <FileText className="h-5 w-5 text-white" />
           </div>
           <h3 className="text-xl font-bold text-card-foreground">
@@ -88,7 +88,7 @@ function InterviewDetailContainer({ interviewDetail }) {
       {/* Interview Questions Section */}
       <div>
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-primary rounded-lg">
+          <div className="relative z-10 p-2 bg-primary rounded-lg">
             <HelpCircle className="h-5 w-5 text-white" />
           </div>
           <h3 className="text-xl font-bold text-card-foreground">
