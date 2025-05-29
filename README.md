@@ -2,6 +2,11 @@
 
 **Guruji** is an AI-powered interview platform that automates the creation, scheduling, and execution of technical interviews. Leveraging modern web technologies and AI/voice services, Guruji offers a seamless experience for recruiters and candidates alike.
 
+### 🔔 **Note**
+
+**Guruji** is still under active development. You might encounter some issues or ongoing UI changes.  
+💡 For bug reports or suggestions, please contact [anoop@anoopvl.pro](mailto:anoop@anoopvl.pro).
+
 ---
 
 ## 🚀 Tech Stack
@@ -15,32 +20,6 @@
 - **Framer Motion** — Animations for smooth UI transitions
 - **Sonner** — Toast notifications
 - **PNPM** — Fast package management
-
----
-
-## 📁 Project Structure
-
-```
-guruji/
-├─ app/
-│  ├─ (main)/dashboard/        # Protected dashboard routes
-│  │   ├─ create-interview/     # Interview creation flow
-│  │   ├─ _components/          # Shared UI components
-│  │   └─ page.jsx              # Dashboard landing
-│  ├─ (main)/all-interviews/    # List all interviews
-│  ├─ (main)/schedule-interview/ # Interviews with feedback
-│  ├─ (main)/layout.js          # Nested layouts + provider
-│  ├─ auth/page.jsx             # OAuth login page
-│  ├─ interview/[id]/start/     # Live interview session
-│  ├─ interview/[id]/completed/ # Interview completed screen
-│  └─ provider.jsx              # Supabase auth wrapper & context
-├─ components/                  # Shared Shadcn UI components
-├─ services/                    # API clients (Supabase, Constants)
-├─ public/                      # Static assets
-├─ styles/                      # Global CSS and Tailwind config
-├─ next.config.mjs              # Next.js config
-└─ package.json                 # Scripts & dependencies
-```
 
 ---
 
@@ -101,6 +80,32 @@ From here, you can:
 
 ---
 
+## 📁 Project Structure
+
+```
+guruji/
+├─ app/
+│  ├─ (main)/dashboard/        # Protected dashboard routes
+│  │   ├─ create-interview/     # Interview creation flow
+│  │   ├─ _components/          # Shared UI components
+│  │   └─ page.jsx              # Dashboard landing
+│  ├─ (main)/all-interviews/    # List all interviews
+│  ├─ (main)/schedule-interview/ # Interviews with feedback
+│  ├─ (main)/layout.js          # Nested layouts + provider
+│  ├─ auth/page.jsx             # OAuth login page
+│  ├─ interview/[id]/start/     # Live interview session
+│  ├─ interview/[id]/completed/ # Interview completed screen
+│  └─ provider.jsx              # Supabase auth wrapper & context
+├─ components/                  # Shared Shadcn UI components
+├─ services/                    # API clients (Supabase, Constants)
+├─ public/                      # Static assets
+├─ styles/                      # Global CSS and Tailwind config
+├─ next.config.mjs              # Next.js config
+└─ package.json                 # Scripts & dependencies
+```
+
+---
+
 ## ⚙️ Installation & Setup
 
 1. **Clone the repo**
@@ -139,27 +144,28 @@ pnpm run dev
 
 ## 📸 Screenshots
 
-> _Visuals from the project (stored in `/screenshots`)_
+> _For more screenshots checkout (`/screenshots`) folder_
 
 ### Landing Page
 
-![Landing](./screenshots/landing.png)
+![Landing](/screenshots/gurujiLanding1.png)
 
 ### Dashboard
 
-![Dashboard](./screenshots/dashboard.png)
+![Dashboard](/screenshots/gurujiDashboard1.png)
 
 ### Create Interview
 
-![Create Interview](./screenshots/create_interview.png)
+![Create Interview](/screenshots/gurujiCreateInterview1.png)
+![Create Interview](/screenshots/gurujiCreateInterview4.png)
 
 ### Live Interview
 
-![Live Interview](./screenshots/live_interview.png)
+![Live Interview](/screenshots/gurujiInterviewProcess1.png)
 
 ### Feedback Page
 
-![Feedback](./screenshots/feedback.png)
+![Feedback](/screenshots/gurujiInterviewDetail2.png)
 
 ---
 
