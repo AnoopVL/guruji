@@ -1,11 +1,11 @@
 // app/interview/[interview_id]/start/page.jsx
 "use client";
 import { InterviewDataContext } from "@/app/context/InterviewDataContext";
-import { Mic } from "lucide-react";
+import { Mic, Video, VideoOff } from "lucide-react";
 import { Phone } from "lucide-react";
 import { Timer } from "lucide-react";
 import Image from "next/image";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import Vapi from "@vapi-ai/web";
 import AlertConfirmation from "./_components/AlertConfirmation";
 import { toast } from "sonner";
@@ -18,12 +18,158 @@ function StartInterview() {
   const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY);
   const [activeUser, setActiveUser] = useState(false);
   const [conversation, setConversation] = useState();
+  const [isCameraOn, setIsCameraOn] = useState(false);
+  const [stream, setStream] = useState(null);
+  const [timer, setTimer] = useState(0);
+  const [isInterviewActive, setIsInterviewActive] = useState(false);
+  const videoRef = useRef(null);
+  const timerRef = useRef(null);
   const { interview_id } = useParams();
   const router = useRouter();
 
   useEffect(() => {
     interviewInfo && startCall();
   }, [interviewInfo]);
+
+  // Timer functions
+  const startTimer = () => {
+    setIsInterviewActive(true);
+    setTimer(0);
+    timerRef.current = setInterval(() => {
+      setTimer((prevTimer) => prevTimer + 1);
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    setIsInterviewActive(false);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  // Camera functions
+  const startCamera = async () => {
+    try {
+      // Check if getUserMedia is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error("Camera not supported by this browser");
+      }
+
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 640 },
+          height: { ideal: 480 },
+        },
+        audio: false,
+      });
+
+      setStream(mediaStream);
+      setIsCameraOn(true);
+
+      // Wait for next render cycle before setting video source
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = mediaStream;
+          videoRef.current
+            .play()
+            .catch((e) => console.log("Video play error:", e));
+        }
+      }, 100);
+
+      toast("Camera turned on successfully");
+    } catch (error) {
+      console.error("Error accessing camera:", error);
+
+      // Provide specific error messages
+      let errorMessage = "Failed to access camera";
+
+      if (error.name === "NotAllowedError") {
+        errorMessage =
+          "Camera permission denied. Please allow camera access and try again.";
+      } else if (error.name === "NotFoundError") {
+        errorMessage =
+          "No camera found. Please connect a camera and try again.";
+      } else if (error.name === "NotReadableError") {
+        errorMessage =
+          "Camera is being used by another application. Please close other apps and try again.";
+      } else if (error.name === "OverconstrainedError") {
+        errorMessage =
+          "Camera doesn't support the requested settings. Trying with default settings...";
+
+        // Try again with basic settings
+        try {
+          const basicStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+          });
+          setStream(basicStream);
+          setIsCameraOn(true);
+
+          setTimeout(() => {
+            if (videoRef.current) {
+              videoRef.current.srcObject = basicStream;
+              videoRef.current
+                .play()
+                .catch((e) => console.log("Video play error:", e));
+            }
+          }, 100);
+
+          toast("Camera turned on with basic settings");
+          return;
+        } catch (basicError) {
+          errorMessage = "Camera access failed even with basic settings";
+        }
+      } else if (error.name === "NotSupportedError") {
+        errorMessage = "Camera not supported by this browser";
+      } else if (error.message.includes("not supported")) {
+        errorMessage = "Camera not supported by this browser or device";
+      }
+
+      toast(errorMessage);
+      setIsCameraOn(false);
+    }
+  };
+
+  const stopCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+      setStream(null);
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    setIsCameraOn(false);
+    toast("Camera turned off");
+  };
+
+  const toggleCamera = () => {
+    if (isCameraOn) {
+      stopCamera();
+    } else {
+      startCamera();
+    }
+  };
+
+  // Cleanup camera and timer on component unmount
+  useEffect(() => {
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [stream]);
 
   const startCall = () => {
     let questionList;
@@ -94,10 +240,15 @@ Key Guidelines:
 
   const stopInterview = () => {
     vapi.stop();
+    stopCamera(); // Also stop camera when interview ends
+    stopTimer(); // Stop timer when interview ends
+    console.log("Call has ended.");
+    toast("Interview Ended...");
   };
 
   vapi.on("call-start", () => {
     console.log("Call has started.");
+    startTimer(); // Start timer when call starts
     toast("Interview Started...");
   });
   vapi.on("speech-start", () => {
@@ -110,13 +261,10 @@ Key Guidelines:
   });
   vapi.on("call-end", () => {
     console.log("Call has ended.");
+    stopTimer(); // Stop timer when call ends
     toast("Interview Ended...");
     GenerateFeedback();
   });
-  // vapi.on("message", (message) => {
-  //   console.log(message?.conversation);
-  //   setConversation(message?.conversation);
-  // });
 
   useEffect(() => {
     const handleMessage = (message) => {
@@ -169,7 +317,7 @@ Key Guidelines:
         Ai Interview Session
         <span className="flex gap-2 justify-center">
           <Timer />
-          00:00:00
+          {formatTime(timer)}
         </span>
       </h2>
 
@@ -190,22 +338,55 @@ Key Guidelines:
           <h2 className="text-lg">Ai Recruiter</h2>
         </div>
         <div>
-          <div className="h-[400px] rounded-lg flex flex-col gap-3 items-center justify-center border-2 border-[#00a63e] shadow-[0_4px_20px_#00a63e33]">
-            <div className="relative">
-              {activeUser && (
-                <span className="absolute inset-0 rounded-full opacity-75 bg-[#e6f9ee] animate-ping" />
-              )}
-              <h2 className="text-4xl bg-primary text-white p-3 rounded-full px-8 py-6">
-                {interviewInfo?.userName[0]}
-              </h2>
-            </div>
-            <h2 className="text-lg">{interviewInfo?.userName}</h2>
+          <div className="h-[400px] rounded-lg flex flex-col gap-3 items-center justify-center border-2 border-[#00a63e] shadow-[0_4px_20px_#00a63e33] relative overflow-hidden">
+            {isCameraOn ? (
+              <>
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                  onLoadedMetadata={() => console.log("Video metadata loaded")}
+                  onError={(e) => console.log("Video error:", e)}
+                />
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
+                  <h2 className="text-lg text-white bg-black bg-opacity-50 px-3 py-1 rounded">
+                    {interviewInfo?.userName}
+                  </h2>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="relative">
+                  {activeUser && !isCameraOn && (
+                    <span className="absolute inset-0 rounded-full opacity-75 bg-[#e6f9ee] animate-ping" />
+                  )}
+                  <h2 className="text-4xl bg-primary text-white p-3 rounded-full px-8 py-6">
+                    {interviewInfo?.userName[0]}
+                  </h2>
+                </div>
+                <h2 className="text-lg">{interviewInfo?.userName}</h2>
+              </>
+            )}
           </div>
         </div>
       </div>
 
       <div className="mt-9 flex flex-row gap-8 justify-center">
         <Mic className="bg-blue-400 rounded-full h-12 w-12 p-3 cursor-pointer transform transition-transform hover:scale-110 hover:shadow-lg" />
+
+        {/* Camera Toggle Button */}
+        <button
+          onClick={toggleCamera}
+          className="bg-green-400 rounded-full h-12 w-12 p-3 cursor-pointer transform transition-transform hover:scale-110 hover:shadow-lg flex items-center justify-center">
+          {isCameraOn ? (
+            <Video className="h-6 w-6 text-white" />
+          ) : (
+            <VideoOff className="h-6 w-6 text-white" />
+          )}
+        </button>
+
         <AlertConfirmation stopInterview={() => stopInterview()}>
           <Phone className="bg-red-400 rounded-full h-12 w-12 p-3 cursor-pointer transform transition-transform hover:scale-110 hover:shadow-lg" />
         </AlertConfirmation>

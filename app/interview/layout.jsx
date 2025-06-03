@@ -4,6 +4,7 @@ import InterviewHeader from "./_components/InterviewHeader";
 import { Inter } from "next/font/google";
 import { InterviewDataContext } from "../context/InterviewDataContext";
 import { useState } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 function InterviewLayout({ children }) {
   const [interviewInfo, setInterviewInfo] = useState();
@@ -13,6 +14,7 @@ function InterviewLayout({ children }) {
       <div>
         <InterviewHeader />
         {children}
+        <Toaster />
       </div>
     </InterviewDataContext.Provider>
   );
