@@ -10,7 +10,7 @@ import InterviewCard from "../dashboard/_components/InterviewCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
-function ScheduleInterview() {
+function ScheduledInterviews() {
   const [interviewList, setInterviewList] = useState([]);
   const { user } = useUser();
 
@@ -90,4 +90,4 @@ function ScheduleInterview() {
   );
 }
 
-export default ScheduleInterview;
+export default ScheduledInterviews;

@@ -80,7 +80,7 @@ function InterviewCard({ interview, viewDetail, onDelete }) {
         {viewDetail ? (
           <Link
             href={
-              "/schedule-interview/" + interview?.interview_id + "/details"
+              "/scheduled-interviews/" + interview?.interview_id + "/details"
             }>
             <Button
               className="w-full flex items-center justify-center gap-2 transition-colors hover:bg-primary/90 dark:hover:bg-primary/90 cursor-pointer"

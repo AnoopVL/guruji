@@ -38,7 +38,7 @@ From here, you can:
 
 - Create new interviews (`/dashboard/create-interview`)
 - View all interviews (`/all-interviews`)
-- View scheduled interviews and feedback (`/schedule-interview`)
+- View scheduled interviews and feedback (`/scheduled-interviews`)
 
 ### 3. Creating an Interview
 
@@ -57,7 +57,7 @@ From here, you can:
 
 ### 5. Schedule & Feedback
 
-**Route:** `/schedule-interview`
+**Route:** `/scheduled-interviews`
 
 - View completed interviews along with feedback
 - Delete interviews via smooth UI interactions
@@ -90,7 +90,7 @@ guruji/
 │  │   ├─ _components/          # Shared UI components
 │  │   └─ page.jsx              # Dashboard landing
 │  ├─ (main)/all-interviews/    # List all interviews
-│  ├─ (main)/schedule-interview/ # Interviews with feedback
+│  ├─ (main)/scheduled-interviews/ # Interviews with feedback
 │  ├─ (main)/layout.js          # Nested layouts + provider
 │  ├─ auth/page.jsx             # OAuth login page
 │  ├─ interview/[id]/start/     # Live interview session
