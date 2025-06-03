@@ -14,12 +14,14 @@ import {
   CheckCircle2,
   ChevronRight,
 } from "lucide-react";
+import { useUser } from "@/app/provider";
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const currentYear = new Date().getFullYear();
+  const { user } = useUser();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,11 +84,19 @@ export default function Home() {
                 className="text-gray-700 hover:text-emerald-500 transition-colors">
                 How It Works
               </Link>
-              <Button asChild>
-                <Link href="/auth" className="w-28 text-center">
-                  Sign In
-                </Link>
-              </Button>
+              {user ? (
+                <Button asChild>
+                  <Link href="/dashboard" className="w-28 text-center">
+                    Dashboard
+                  </Link>
+                </Button>
+              ) : (
+                <Button asChild>
+                  <Link href="/auth" className="w-28 text-center">
+                    Sign In
+                  </Link>
+                </Button>
+              )}
             </nav>
 
             <div className="md:hidden flex items-center">

@@ -32,7 +32,7 @@ function Provider({ children }) {
     }
 
     // If the user is already logged in and is on a public route, redirect to /dashboard
-    if (user && ["/", "/auth"].includes(pathname)) {
+    if (user && ["/auth"].includes(pathname)) {
       router.replace("/dashboard");
     }
 
