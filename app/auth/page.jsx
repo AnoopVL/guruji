@@ -21,7 +21,14 @@ function Login() {
     const redirectTo = getRedirectUrl();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo },
+      options: {
+        redirectTo,
+        queryParams: {
+          access_type: "offline",
+          prompt: "consent",
+        },
+        scopes: "openid email profile",
+      },
     });
     if (error) {
       console.error("Error", error.message);
