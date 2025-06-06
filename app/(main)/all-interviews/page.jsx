@@ -1,6 +1,8 @@
 // app/(main)/all-interviews/page.jsx
 "use client";
 import React, { useEffect } from "react";
+import Link from "next/link";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FaVideo } from "react-icons/fa6";
@@ -42,7 +44,12 @@ function AllInterviews() {
             <FaVideo className="text-green-700 w-6 h-6" />
           </div>
           <h2>You don't have any interviews created</h2>
-          <Button>+ Create New Interview</Button>
+          <Link href={"/dashboard/create-interview"}>
+            <Button>
+              <Plus />
+              Create New Interview
+            </Button>
+          </Link>
         </div>
       )}
       {interviewList && (

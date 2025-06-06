@@ -1,16 +1,14 @@
 // app/(main)/dashboard/create-interview/_components/QuestionList.jsx
+"use client";
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { LoaderCircle } from "lucide-react";
-import { useState } from "react";
+import { LoaderCircle, ArrowRight, Check, Sparkles } from "lucide-react";
 import QuestionListContainer from "./QuestionListContainer";
 import { supabase } from "@/services/supabaseClient";
 import { useUser } from "@/app/provider";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import { Check } from "lucide-react";
 
 function QuestionList({ formData, onCreateLink }) {
   const [loading, setLoading] = useState(false);
@@ -20,21 +18,23 @@ function QuestionList({ formData, onCreateLink }) {
   const [interviewId, setInterviewId] = useState(null);
 
   const { user } = useUser();
+
   useEffect(() => {
     if (formData) {
       GenerateQuestionList();
     }
   }, [formData]);
+
   const GenerateQuestionList = async () => {
     setLoading(true);
     try {
       const result = await axios.post("/api/ai-model", {
         ...formData,
       });
-      // console.log(result.data.content);
+
       const Content = result.data.content;
-      // Extract just the array part from the response
       const jsonArrayMatch = Content.match(/\[[\s\S]*\]/);
+
       if (jsonArrayMatch) {
         try {
           const parsed = JSON.parse(jsonArrayMatch[0]);
@@ -58,14 +58,14 @@ function QuestionList({ formData, onCreateLink }) {
 
   const onFinish = async () => {
     if (saveFinished) {
-      // Second click — go to next step
-      onCreateLink(interviewId); // trigger the next page
+      onCreateLink(interviewId);
       return;
     }
-    // First click — save to Supabase
+
     setSaveLoading(true);
     setSaveFinished(false);
     const newInterviewId = uuidv4();
+
     const { data, error } = await supabase
       .from("interviews")
       .insert([
@@ -77,57 +77,74 @@ function QuestionList({ formData, onCreateLink }) {
         },
       ])
       .select();
-    // update credits
+
     const userUpdate = await supabase
       .from("Users")
       .update({ credits: Number(user?.credits) - 1 })
       .eq("email", user?.email)
       .select();
+
     console.log(userUpdate);
 
     setSaveLoading(false);
     setSaveFinished(true);
-    setInterviewId(newInterviewId); // Save for second click
+    setInterviewId(newInterviewId);
   };
 
   return (
-    <>
-      <div>
-        {loading && (
-          <div className="p-5 bg-green-100 rounded-xl border border-primary shadow-xl flex gap-5 items-center">
-            <LoaderCircle className="animate-spin" />
-            <div>
-              <h2 className="font-medium">Generation Interview questions</h2>
-              <p className="text-primary">
-                Our Ai is crafting personalized interview questions for your job
+    <div className="space-y-6">
+      {loading && (
+        <div className="relative overflow-hidden backdrop-blur-sm bg-primary/5 dark:bg-primary/10 rounded-xl border border-primary/20 shadow-sm p-6">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10">
+              <LoaderCircle className="h-6 w-6 text-primary animate-spin" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="font-medium text-card-foreground flex items-center gap-2">
+                Generating Interview Questions
+                <Sparkles className="h-4 w-4 text-primary" />
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Our AI is crafting personalized interview questions for your job
                 description
               </p>
             </div>
           </div>
-        )}
 
-        {!loading && questionList && questionList.length > 0 && (
-          <div className="mt-5">
-            <QuestionListContainer questionList={questionList} />
-            <div className="flex justify-end mt-10">
-              <Button onClick={onFinish} disabled={saveLoading}>
-                {saveLoading ? (
-                  <LoaderCircle className="animate-spin mr-2" />
-                ) : saveFinished ? (
-                  <>
-                    Create Interview Link and Finish <Check className="ml-2" />
-                  </>
-                ) : (
-                  <>
-                    Finish <ArrowRight className="ml-2" />
-                  </>
-                )}
-              </Button>
-            </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 dark:from-primary/10 dark:to-primary/10" />
+        </div>
+      )}
+
+      {!loading && questionList && questionList.length > 0 && (
+        <div className="space-y-6">
+          <QuestionListContainer questionList={questionList} />
+
+          <div className="flex justify-end">
+            <Button
+              onClick={onFinish}
+              disabled={saveLoading}
+              className="flex items-center gap-2 transition-all duration-200 hover:shadow-md cursor-pointer">
+              {saveLoading ? (
+                <>
+                  <LoaderCircle className="h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : saveFinished ? (
+                <>
+                  Create Interview Link and Finish
+                  <Check className="h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  Finish
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
+            </Button>
           </div>
-        )}
-      </div>
-    </>
+        </div>
+      )}
+    </div>
   );
 }
 

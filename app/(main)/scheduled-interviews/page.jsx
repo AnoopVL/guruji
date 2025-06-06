@@ -9,6 +9,8 @@ import { FaVideo } from "react-icons/fa6";
 import InterviewCard from "../dashboard/_components/InterviewCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import Link from "next/link";
+import { Plus } from "lucide-react";
 
 function ScheduledInterviews() {
   const [interviewList, setInterviewList] = useState([]);
@@ -63,7 +65,12 @@ function ScheduledInterviews() {
             <FaVideo className="text-green-700 w-6 h-6" />
           </div>
           <h2>You don't have any interviews created</h2>
-          <Button>+ Create New Interview</Button>
+          <Link href={"/dashboard/create-interview"}>
+            <Button>
+              <Plus />
+              Create New Interview
+            </Button>
+          </Link>
         </div>
       )}
       {interviewList && interviewList.length > 0 && (
