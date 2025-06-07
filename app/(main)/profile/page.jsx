@@ -1,6 +1,6 @@
 // app/(main)/profile/page.jsx
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useUser } from "@/app/provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,7 @@ import {
   Plus,
   AlertTriangle,
   Sparkles,
+  Camera,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/services/supabaseClient";
@@ -30,6 +31,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import Image from "next/image";
 
 function Profile() {
   const { user, setUser } = useUser();
@@ -37,6 +39,36 @@ function Profile() {
   const [newName, setNewName] = useState(user?.name || "");
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [totalInterviews, setTotalInterviews] = useState(0);
+  const [loadingStats, setLoadingStats] = useState(true);
+
+  // Fetch user statistics
+  useEffect(() => {
+    const fetchUserStats = async () => {
+      if (!user?.email) return;
+
+      setLoadingStats(true);
+      try {
+        // Get total interviews count
+        const { data: interviews, error } = await supabase
+          .from("interviews")
+          .select("id")
+          .eq("userEmail", user.email);
+
+        if (error) {
+          console.error("Error fetching interviews:", error);
+        } else {
+          setTotalInterviews(interviews?.length || 0);
+        }
+      } catch (error) {
+        console.error("Error fetching user stats:", error);
+      } finally {
+        setLoadingStats(false);
+      }
+    };
+
+    fetchUserStats();
+  }, [user?.email]);
 
   const handleUpdateName = async () => {
     if (!newName.trim()) {
@@ -74,6 +106,7 @@ function Profile() {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+
       setUser(null);
       toast.success("Signed out successfully!");
       window.location.href = "/";
@@ -127,7 +160,7 @@ function Profile() {
   };
 
   const handleBuyCredits = () => {
-    toast("Feature comming soon!");
+    toast("Feature coming soon!");
     // window.location.href = "/billing";
   };
 
@@ -176,6 +209,40 @@ function Profile() {
                 <h2 className="text-lg font-semibold text-card-foreground">
                   Personal Information
                 </h2>
+              </div>
+
+              {/* Profile Picture Section */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-card-foreground">
+                  Profile Picture
+                </label>
+                <div className="flex items-center gap-4">
+                  {user?.picture ? (
+                    <div className="relative h-20 w-20 rounded-full overflow-hidden border-2 border-border/60">
+                      <Image
+                        src={user.picture}
+                        alt={user.name || "Profile"}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-20 w-20 rounded-full bg-gradient-to-br from-primary/10 to-primary/30 text-primary dark:from-primary/20 dark:to-primary/40 border-2 border-border/60">
+                      <Camera className="h-8 w-8" />
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <p className="text-sm text-muted-foreground">
+                      {user?.picture
+                        ? "Your profile picture from your account"
+                        : "No profile picture set"}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Profile pictures are managed through your authentication
+                      provider
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Username */}
@@ -417,7 +484,7 @@ function Profile() {
                     Total interviews
                   </span>
                   <span className="text-sm font-medium text-card-foreground">
-                    {user?.total_interviews || 0}
+                    {loadingStats ? "..." : totalInterviews}
                   </span>
                 </div>
               </div>
