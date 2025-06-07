@@ -3,7 +3,7 @@ import { Calendar } from "lucide-react";
 import { LayoutDashboard } from "lucide-react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { CiCreditCard1 } from "react-icons/ci";
-import { Settings } from "lucide-react";
+import { User } from "lucide-react";
 import { Code2Icon } from "lucide-react";
 import { User2Icon } from "lucide-react";
 import { Puzzle } from "lucide-react";
@@ -32,9 +32,9 @@ export const SidebarOptions = [
     path: "/billing",
   },
   {
-    name: "Settings",
-    icon: Settings,
-    path: "/settings",
+    name: "Profile",
+    icon: User,
+    path: "/profile",
   },
 ];
 

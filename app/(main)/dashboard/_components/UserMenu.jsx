@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/app/provider";
 import { supabase } from "@/services/supabaseClient";
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -15,13 +16,25 @@ import {
 import SignOutAlertConfirmation from "./SignOutAlertConfirmation";
 
 export default function UserMenu() {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const router = useRouter();
   const [showSignOutDialog, setShowSignOutDialog] = useState(false);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.replace("/");
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      setUser(null);
+      toast.success("Signed out successfully!");
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast.error("Failed to sign out");
+    }
+  };
+
+  const handleProfile = () => {
+    router.replace("/profile");
   };
 
   if (!user) return null;
@@ -41,7 +54,9 @@ export default function UserMenu() {
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleProfile()}>
+            Profile
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowSignOutDialog(true)}>
             Sign Out
           </DropdownMenuItem>
