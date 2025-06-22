@@ -18,7 +18,7 @@ export async function POST(req) {
     });
 
     const completion = await openai.chat.completions.create({
-      model: "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",
+      model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
       messages: [{ role: "user", content: FINAL_PROMPT }],
       //   response_format: "json",
     });
