@@ -1,3 +1,4 @@
+// app/guest/interview/page.jsx
 import React from "react";
 
 function GuestInterview() {
