@@ -287,29 +287,70 @@ Key Guidelines:
   }, []);
 
   const GenerateFeedback = async () => {
-    const result = await axios.post("/api/ai-feedback", {
-      conversation: conversation,
-    });
-    console.log(result?.data);
-    const Content = result.data.content;
-    const FINAL_CONTENT = Content.replace("```json", "").replace("```", "");
-    console.log(FINAL_CONTENT);
+    try {
+      const result = await axios.post("/api/ai-feedback", {
+        conversation,
+      });
+      // 1️ Check HTTP status
+      if (result.status !== 200) {
+        console.error("AI provider error:", result.data);
+        toast.error("Could not generate feedback (AI service error)");
+        router.push(`/interview/${interview_id}/completed`);
+        return;
+      }
+      // 2️ Check payload
+      const Content = result.data?.content;
+      if (typeof Content !== "string") {
+        console.error("Unexpected AI response:", result.data);
+        toast.error("Invalid feedback format");
+        router.push(`/interview/${interview_id}/completed`);
+        return;
+      }
+      // 3️ Clean up markdown fences
+      const FINAL_CONTENT = Content
+        .replace(/```json\s*/, "")
+        .replace(/```/, "")
+        .trim();
+      // 4️ Parse JSON safely
+      let feedbackObj;
+      try {
+        feedbackObj = JSON.parse(FINAL_CONTENT);
+      } catch (parseErr) {
+        console.error("JSON parse error:", parseErr);
+        toast.error("Could not parse feedback");
+        router.push(`/interview/${interview_id}/completed`);
+        return;
+      }
+      // 5️ Persist to Supabase
+      const { data, error } = await supabase
+        .from("interview-feedback")
+        .insert([
+          {
+            userName: interviewInfo?.userName,
+            userEmail: interviewInfo?.userEmail,
+            interview_id,
+            feedback: feedbackObj,
+            recommended: false,
+          },
+        ])
+        .select();
 
-    const { data, error } = await supabase
-      .from("interview-feedback")
-      .insert([
-        {
-          userName: interviewInfo?.userName,
-          userEmail: interviewInfo?.userEmail,
-          interview_id: interview_id,
-          feedback: JSON.parse(FINAL_CONTENT),
-          recommended: false,
-        },
-      ])
-      .select();
-    console.log(data);
-    router.push("/interview/" + interview_id + "/completed");
+      if (error) {
+        console.error("Supabase insert error:", error);
+        toast.error("Failed to save feedback");
+        router.push(`/interview/${interview_id}/completed`);
+        return;
+      }
+      // 6️ Go to completed screen
+      router.push(`/interview/${interview_id}/completed`);
+    } catch (err) {
+      // 7️ Network / Axios errors
+      console.error("Unexpected error:", err);
+      toast.error("Server error—please try again later");
+      router.push(`/interview/${interview_id}/completed`);
+    }
   };
+  
 
   return (
     <div className="p-20 lg:px-48 xl:px-56 bg-gray-200">
