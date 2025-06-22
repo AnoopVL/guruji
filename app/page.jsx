@@ -185,7 +185,7 @@ export default function Home() {
                     variant="outline"
                     size="lg"
                     className="border-emerald-200 hover:bg-emerald-50">
-                    <Link href="#how-it-works" className="text-center">
+                    <Link href="/guest/dashboard" className="text-center">
                       See How It Works
                     </Link>
                   </Button>

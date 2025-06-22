@@ -10,7 +10,7 @@ function GuestDashboard() {
 
   const handleDemoClick = () => {
     try {
-      router.push("/guest/interview");
+      router.push("/interview/066f5f08-6fbb-42d3-92ee-d237170a872f");
     } catch (error) {
       console.error("Navigation error:", error);
     }
@@ -134,7 +134,7 @@ function GuestDashboard() {
         {/* Bottom Stats */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="text-center p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-gray-200/50">
-            <div className="text-2xl font-bold text-emerald-600">10K+</div>
+            <div className="text-2xl font-bold text-emerald-600">100+</div>
             <div className="text-sm text-gray-600">Interviews Completed</div>
           </div>
           <div className="text-center p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-gray-200/50">
