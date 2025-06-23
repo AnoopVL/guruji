@@ -19,7 +19,7 @@ function Provider({ children }) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    const publicRoutes = ["/", "/auth", "/interview"];
+    const publicRoutes = ["/", "/auth", "/interview", "/guest"];
     const isPublicRoute = publicRoutes.some(
       (route) => pathname === route || pathname.startsWith(route + "/")
     );
