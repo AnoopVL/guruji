@@ -1,7 +1,7 @@
 // app/interview/[interview_id]/start/page.jsx
 "use client";
 import { InterviewDataContext } from "@/app/context/InterviewDataContext";
-import { Mic, Video, VideoOff } from "lucide-react";
+import { Mic, Video, VideoOff, Loader2 } from "lucide-react";
 import { Phone } from "lucide-react";
 import { Timer } from "lucide-react";
 import Image from "next/image";
@@ -22,6 +22,8 @@ function StartInterview() {
   const [stream, setStream] = useState(null);
   const [timer, setTimer] = useState(0);
   const [isInterviewActive, setIsInterviewActive] = useState(false);
+  const [isGeneratingFeedback, setIsGeneratingFeedback] = useState(false);
+  const [isCallActive, setIsCallActive] = useState(false);
   const videoRef = useRef(null);
   const timerRef = useRef(null);
   const { interview_id } = useParams();
@@ -238,35 +240,62 @@ Key Guidelines:
     vapi.start(assistantOptions);
   };
 
-  const stopInterview = () => {
-    vapi.stop();
-    stopCamera(); // Also stop camera when interview ends
-    stopTimer(); // Stop timer when interview ends
-    console.log("Call has ended.");
-    toast("Interview Ended...");
+  const stopInterview = async () => {
+    console.log("Stopping interview...");
+    setIsGeneratingFeedback(true);
+
+    try {
+      // Stop the call
+      vapi.stop();
+
+      // Stop camera and timer immediately
+      stopCamera();
+      stopTimer();
+      setIsCallActive(false);
+
+      toast("Interview ended. Generating feedback...");
+
+      // Generate feedback immediately since we have the conversation data
+      await GenerateFeedback();
+    } catch (error) {
+      console.error("Error stopping interview:", error);
+      setIsGeneratingFeedback(false);
+      toast.error("Error ending interview");
+    }
   };
 
-  vapi.on("call-start", () => {
-    console.log("Call has started.");
-    startTimer(); // Start timer when call starts
-    toast("Interview Started...");
-  });
-  vapi.on("speech-start", () => {
-    console.log("Assistant speech has started.");
-    setActiveUser(false);
-  });
-  vapi.on("speech-end", () => {
-    console.log("Assistant speech has ended.");
-    setActiveUser(true);
-  });
-  vapi.on("call-end", () => {
-    console.log("Call has ended.");
-    stopTimer(); // Stop timer when call ends
-    toast("Interview Ended...");
-    GenerateFeedback();
-  });
-
+  // Set up VAPI event listeners in useEffect
   useEffect(() => {
+    const handleCallStart = () => {
+      console.log("Call has started.");
+      setIsCallActive(true);
+      startTimer(); // Start timer when call starts
+      toast("Interview Started...");
+    };
+
+    const handleSpeechStart = () => {
+      console.log("Assistant speech has started.");
+      setActiveUser(false);
+    };
+
+    const handleSpeechEnd = () => {
+      console.log("Assistant speech has ended.");
+      setActiveUser(true);
+    };
+
+    const handleCallEnd = async () => {
+      console.log("Call has ended naturally.");
+      setIsCallActive(false);
+      stopTimer(); // Stop timer when call ends
+
+      // Only generate feedback if not already generating
+      if (!isGeneratingFeedback) {
+        setIsGeneratingFeedback(true);
+        toast("Interview ended. Generating feedback...");
+        await GenerateFeedback();
+      }
+    };
+
     const handleMessage = (message) => {
       console.log("Message: ", message);
       if (message?.conversation) {
@@ -276,21 +305,39 @@ Key Guidelines:
       }
     };
 
+    // Add event listeners
+    vapi.on("call-start", handleCallStart);
+    vapi.on("speech-start", handleSpeechStart);
+    vapi.on("speech-end", handleSpeechEnd);
+    vapi.on("call-end", handleCallEnd);
     vapi.on("message", handleMessage);
+
+    // Cleanup function
     return () => {
+      vapi.off("call-start", handleCallStart);
+      vapi.off("speech-start", handleSpeechStart);
+      vapi.off("speech-end", handleSpeechEnd);
+      vapi.off("call-end", handleCallEnd);
       vapi.off("message", handleMessage);
-      vapi.off("call-start", () => console.log("END"));
-      vapi.off("speech-start", () => console.log("END"));
-      vapi.off("speech-end", () => console.log("END"));
-      vapi.off("call-end", () => console.log("END"));
     };
-  }, []);
+  }, [isGeneratingFeedback]); // Add isGeneratingFeedback as dependency
 
   const GenerateFeedback = async () => {
+    console.log("GenerateFeedback called with conversation:", conversation);
+
     try {
+      // Check if conversation data exists
+      if (!conversation) {
+        console.error("No conversation data available");
+        toast.error("No conversation data to generate feedback");
+        router.push(`/interview/${interview_id}/completed`);
+        return;
+      }
+
       const result = await axios.post("/api/ai-feedback", {
         conversation,
       });
+
       // 1️ Check HTTP status
       if (result.status !== 200) {
         console.error("AI provider error:", result.data);
@@ -298,6 +345,7 @@ Key Guidelines:
         router.push(`/interview/${interview_id}/completed`);
         return;
       }
+
       // 2️ Check payload
       const Content = result.data?.content;
       if (typeof Content !== "string") {
@@ -306,11 +354,12 @@ Key Guidelines:
         router.push(`/interview/${interview_id}/completed`);
         return;
       }
+
       // 3️ Clean up markdown fences
-      const FINAL_CONTENT = Content
-        .replace(/```json\s*/, "")
+      const FINAL_CONTENT = Content.replace(/```json\s*/, "")
         .replace(/```/, "")
         .trim();
+
       // 4️ Parse JSON safely
       let feedbackObj;
       try {
@@ -321,6 +370,7 @@ Key Guidelines:
         router.push(`/interview/${interview_id}/completed`);
         return;
       }
+
       // 5️ Persist to Supabase
       const { data, error } = await supabase
         .from("interview-feedback")
@@ -341,101 +391,133 @@ Key Guidelines:
         router.push(`/interview/${interview_id}/completed`);
         return;
       }
+
+      console.log("Feedback saved successfully:", data);
+      toast.success("Feedback generated successfully!");
+
       // 6️ Go to completed screen
       router.push(`/interview/${interview_id}/completed`);
     } catch (err) {
       // 7️ Network / Axios errors
-      console.error("Unexpected error:", err);
+      console.error("Unexpected error in GenerateFeedback:", err);
       toast.error("Server error—please try again later");
       router.push(`/interview/${interview_id}/completed`);
+    } finally {
+      setIsGeneratingFeedback(false);
     }
   };
-  
 
   return (
-    <div className="p-20 lg:px-48 xl:px-56 bg-gray-200">
-      <h2 className="font-bold justify-between text-xl flex">
-        Ai Interview Session
-        <span className="flex gap-2 justify-center">
-          <Timer />
-          {formatTime(timer)}
-        </span>
-      </h2>
+    <div className="relative">
+      {/* Main Content */}
+      <div
+        className={`p-20 lg:px-48 xl:px-56 bg-gray-200 ${
+          isGeneratingFeedback ? "blur-sm pointer-events-none" : ""
+        }`}>
+        <h2 className="font-bold justify-between text-xl flex">
+          Ai Interview Session
+          <span className="flex gap-2 justify-center">
+            <Timer />
+            {formatTime(timer)}
+          </span>
+        </h2>
 
-      <div className="grid grid-col-1 md:grid-cols-2 gap-7 mt-7">
-        <div className="h-[400px] rounded-lg flex flex-col gap-3 items-center justify-center border-2 border-[#00a63e] shadow-[0_4px_20px_#00a63e33]">
-          <div className="relative">
-            {!activeUser && (
-              <span className="absolute inset-0 rounded-full opacity-75 bg-[#e6f9ee] animate-ping" />
-            )}
-            <Image
-              src="/gurujiPortrait.png"
-              alt="ai-interviewer"
-              width={100}
-              height={100}
-              className="w-[100px] h-[100px] rounded-full object-cover ring-4 ring-[#00a63e]"
-            />
+        <div className="grid grid-col-1 md:grid-cols-2 gap-7 mt-7">
+          <div className="h-[400px] rounded-lg flex flex-col gap-3 items-center justify-center border-2 border-[#00a63e] shadow-[0_4px_20px_#00a63e33]">
+            <div className="relative">
+              {!activeUser && isCallActive && (
+                <span className="absolute inset-0 rounded-full opacity-75 bg-[#e6f9ee] animate-ping" />
+              )}
+              <Image
+                src="/gurujiPortrait.png"
+                alt="ai-interviewer"
+                width={100}
+                height={100}
+                className="w-[100px] h-[100px] rounded-full object-cover ring-4 ring-[#00a63e]"
+              />
+            </div>
+            <h2 className="text-lg">Ai Recruiter</h2>
           </div>
-          <h2 className="text-lg">Ai Recruiter</h2>
+          <div>
+            <div className="h-[400px] rounded-lg flex flex-col gap-3 items-center justify-center border-2 border-[#00a63e] shadow-[0_4px_20px_#00a63e33] relative overflow-hidden">
+              {isCameraOn ? (
+                <>
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                    onLoadedMetadata={() =>
+                      console.log("Video metadata loaded")
+                    }
+                    onError={(e) => console.log("Video error:", e)}
+                  />
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
+                    <h2 className="text-lg text-white bg-black bg-opacity-50 px-3 py-1 rounded">
+                      {interviewInfo?.userName}
+                    </h2>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="relative">
+                    {activeUser && !isCameraOn && isCallActive && (
+                      <span className="absolute inset-0 rounded-full opacity-75 bg-[#e6f9ee] animate-ping" />
+                    )}
+                    <h2 className="text-4xl bg-primary text-white p-3 rounded-full px-8 py-6">
+                      {interviewInfo?.userName[0]}
+                    </h2>
+                  </div>
+                  <h2 className="text-lg">{interviewInfo?.userName}</h2>
+                </>
+              )}
+            </div>
+          </div>
         </div>
-        <div>
-          <div className="h-[400px] rounded-lg flex flex-col gap-3 items-center justify-center border-2 border-[#00a63e] shadow-[0_4px_20px_#00a63e33] relative overflow-hidden">
+
+        <div className="mt-9 flex flex-row gap-8 justify-center">
+          <Mic className="bg-blue-400 rounded-full h-12 w-12 p-3 cursor-pointer transform transition-transform hover:scale-110 hover:shadow-lg" />
+
+          {/* Camera Toggle Button */}
+          <button
+            onClick={toggleCamera}
+            disabled={isGeneratingFeedback}
+            className="bg-green-400 rounded-full h-12 w-12 p-3 cursor-pointer transform transition-transform hover:scale-110 hover:shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
             {isCameraOn ? (
-              <>
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                  onLoadedMetadata={() => console.log("Video metadata loaded")}
-                  onError={(e) => console.log("Video error:", e)}
-                />
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
-                  <h2 className="text-lg text-white bg-black bg-opacity-50 px-3 py-1 rounded">
-                    {interviewInfo?.userName}
-                  </h2>
-                </div>
-              </>
+              <Video className="h-6 w-6 text-white" />
             ) : (
-              <>
-                <div className="relative">
-                  {activeUser && !isCameraOn && (
-                    <span className="absolute inset-0 rounded-full opacity-75 bg-[#e6f9ee] animate-ping" />
-                  )}
-                  <h2 className="text-4xl bg-primary text-white p-3 rounded-full px-8 py-6">
-                    {interviewInfo?.userName[0]}
-                  </h2>
-                </div>
-                <h2 className="text-lg">{interviewInfo?.userName}</h2>
-              </>
+              <VideoOff className="h-6 w-6 text-white" />
             )}
+          </button>
+
+          <AlertConfirmation
+            stopInterview={stopInterview}
+            disabled={isGeneratingFeedback}>
+            <Phone className="bg-red-400 rounded-full h-12 w-12 p-3 cursor-pointer transform transition-transform hover:scale-110 hover:shadow-lg" />
+          </AlertConfirmation>
+        </div>
+
+        <h2 className="text-gray-500 mt-6 justify-center flex">
+          {isCallActive ? "Interview in process" : "Preparing interview..."}
+        </h2>
+      </div>
+
+      {/* Loading Overlay */}
+      {isGeneratingFeedback && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 flex flex-col items-center gap-4 max-w-sm mx-4">
+            <Loader2 className="h-12 w-12 animate-spin text-[#00a63e]" />
+            <h3 className="text-lg font-semibold text-gray-900">
+              Generating Feedback
+            </h3>
+            <p className="text-gray-600 text-center">
+              Please wait while we analyze your interview and generate
+              personalized feedback...
+            </p>
           </div>
         </div>
-      </div>
-
-      <div className="mt-9 flex flex-row gap-8 justify-center">
-        <Mic className="bg-blue-400 rounded-full h-12 w-12 p-3 cursor-pointer transform transition-transform hover:scale-110 hover:shadow-lg" />
-
-        {/* Camera Toggle Button */}
-        <button
-          onClick={toggleCamera}
-          className="bg-green-400 rounded-full h-12 w-12 p-3 cursor-pointer transform transition-transform hover:scale-110 hover:shadow-lg flex items-center justify-center">
-          {isCameraOn ? (
-            <Video className="h-6 w-6 text-white" />
-          ) : (
-            <VideoOff className="h-6 w-6 text-white" />
-          )}
-        </button>
-
-        <AlertConfirmation stopInterview={() => stopInterview()}>
-          <Phone className="bg-red-400 rounded-full h-12 w-12 p-3 cursor-pointer transform transition-transform hover:scale-110 hover:shadow-lg" />
-        </AlertConfirmation>
-      </div>
-
-      <h2 className="text-gray-500 mt-6 justify-center flex">
-        Interview in process
-      </h2>
+      )}
     </div>
   );
 }

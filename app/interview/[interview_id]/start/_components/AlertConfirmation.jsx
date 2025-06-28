@@ -12,10 +12,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-function AlertConfirmation({ children, stopInterview }) {
+function AlertConfirmation({ children, stopInterview, disabled = false }) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger>{children}</AlertDialogTrigger>
+      <AlertDialogTrigger asChild disabled={disabled}>
+        {children}
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
