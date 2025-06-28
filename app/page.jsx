@@ -13,6 +13,10 @@ import {
   UserCheck,
   CheckCircle2,
   ChevronRight,
+  Play,
+  Sparkles,
+  ArrowRight,
+  Eye,
 } from "lucide-react";
 import { useUser } from "@/app/provider";
 
@@ -172,23 +176,78 @@ export default function Home() {
                   role. Save hours of preparation time and ensure you hire the
                   right talent.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button
-                    asChild
-                    size="lg"
-                    className="bg-emerald-500 hover:bg-emerald-600">
-                    <Link href="/auth" className="text-center">
-                      Get Started <ChevronRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="border-emerald-200 hover:bg-emerald-50">
-                    <Link href="/guest/dashboard" className="text-center">
-                      See How It Works
-                    </Link>
-                  </Button>
+
+                {/* Enhanced CTA Section */}
+                <div className="space-y-6">
+                  {/* Primary CTA */}
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Button
+                      asChild
+                      size="lg"
+                      className="bg-emerald-500 hover:bg-emerald-600 text-lg px-8 py-4 h-auto">
+                      <Link href="/auth" className="text-center">
+                        Get Started Free{" "}
+                        <ChevronRight className="ml-2 h-5 w-5" />
+                      </Link>
+                    </Button>
+                  </div>
+
+                  {/* Demo CTA - More Prominent */}
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-100 to-blue-100 rounded-2xl blur-xl opacity-60 animate-pulse"></div>
+                    <div className="relative bg-white/90 backdrop-blur-sm border-2 border-emerald-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-full">
+                            <Play className="h-6 w-6 text-white ml-1" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-gray-900 text-lg">
+                              Try it now - No signup required!
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              Experience the full platform instantly
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 px-3 py-1 bg-emerald-100 rounded-full">
+                          <Sparkles className="h-4 w-4 text-emerald-600" />
+                          <span className="text-xs font-medium text-emerald-700">
+                            Live Demo
+                          </span>
+                        </div>
+                      </div>
+
+                      <Button
+                        asChild
+                        size="lg"
+                        variant="outline"
+                        className="w-full border-2 border-emerald-300 hover:bg-emerald-50 hover:border-emerald-400 text-emerald-700 font-semibold text-lg py-4 h-auto group-hover:scale-[1.02] transition-all duration-300">
+                        <Link
+                          href="/guest/dashboard"
+                          className="flex items-center justify-center gap-3">
+                          <Eye className="h-5 w-5" />
+                          See How It Works
+                          <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                      </Button>
+
+                      <div className="flex items-center justify-center gap-4 mt-4 text-xs text-gray-500">
+                        <div className="flex items-center gap-1">
+                          <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                          <span>No credit card</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                          <span>Instant access</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                          <span>Full features</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -208,6 +267,49 @@ export default function Home() {
                     priority
                   />
                   <div className="absolute inset-0 bg-gradient-to-tr from-emerald-600/20 to-transparent" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Demo Highlight Section */}
+        <section className="py-12 bg-gradient-to-r from-emerald-50 via-blue-50 to-emerald-50">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-emerald-200 mb-6">
+                <Sparkles className="h-4 w-4 text-emerald-600" />
+                <span className="text-sm font-medium text-emerald-700">
+                  Interactive Demo Available
+                </span>
+              </div>
+
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                See Guruji in Action - Right Now!
+              </h2>
+              <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                Don't just read about it - experience our AI-powered interview
+                platform yourself. Create questions, conduct interviews, and see
+                results in under 2 minutes.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white font-semibold px-8 py-4 h-auto shadow-lg hover:shadow-xl transition-all duration-300">
+                  <Link
+                    href="/guest/dashboard"
+                    className="flex items-center gap-3">
+                    <Play className="h-5 w-5" />
+                    Launch Interactive Demo
+                    <ArrowRight className="h-5 w-5" />
+                  </Link>
+                </Button>
+
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Clock className="h-4 w-4" />
+                  <span>Takes less than 2 minutes</span>
                 </div>
               </div>
             </div>
@@ -492,150 +594,6 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-            <div className="col-span-1 md:col-span-2">
-              <Link href="/" className="inline-block mb-4">
-                <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-emerald-400">
-                  Guruji
-                </span>
-              </Link>
-              <p className="text-gray-600 mb-4 max-w-md">
-                Streamline your interview process with AI-powered question
-                generation, saving you time and ensuring you hire the right
-                talent.
-              </p>
-              <div className="flex items-center space-x-4">
-                <Link
-                  href="#"
-                  className="text-gray-500 hover:text-emerald-500 transition-colors">
-                  <svg
-                    className="h-5 w-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true">
-                    <path
-                      fillRule="evenodd"
-                      d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Link>
-                <Link
-                  href="#"
-                  className="text-gray-500 hover:text-emerald-500 transition-colors">
-                  <svg
-                    className="h-5 w-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true">
-                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                  </svg>
-                </Link>
-                <Link
-                  href="#"
-                  className="text-gray-500 hover:text-emerald-500 transition-colors">
-                  <svg
-                    className="h-5 w-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true">
-                    <path
-                      fillRule="evenodd"
-                      d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Link>
-                <Link
-                  href="#"
-                  className="text-gray-500 hover:text-emerald-500 transition-colors">
-                  <svg
-                    className="h-5 w-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true">
-                    <path
-                      fillRule="evenodd"
-                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c5.51 0 10-4.48 10-10S17.51 2 12 2zm6.605 4.61a8.502 8.502 0 011.93 5.314c-.281-.054-3.101-.629-5.943-.271-.065-.141-.12-.293-.184-.445a25.416 25.416 0 00-.564-1.236c3.145-1.28 4.577-3.124 4.761-3.362zM12 3.475c2.17 0 4.154.813 5.662 2.148-.152.216-1.443 1.941-4.48 3.08-1.399-2.57-2.95-4.675-3.189-5A8.687 8.687 0 0112 3.475zm-3.633.803a53.896 53.896 0 013.167 4.935c-3.992 1.063-7.517 1.04-7.896 1.04a8.581 8.581 0 014.729-5.975zM3.453 12.01v-.26c.37.01 4.512.065 8.775-1.215.25.477.477.965.694 1.453-.109.033-.228.065-.336.098-4.404 1.42-6.747 5.303-6.942 5.629a8.522 8.522 0 01-2.19-5.705zM12 20.547a8.482 8.482 0 01-5.239-1.8c.152-.315 1.888-3.656 6.703-5.337.022-.01.033-.01.054-.022a35.318 35.318 0 011.823 6.475 8.4 8.4 0 01-3.341.684zm4.761-1.465c-.086-.52-.542-3.015-1.659-6.084 2.679-.423 5.022.271 5.314.369a8.468 8.468 0 01-3.655 5.715z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4">
-                Product
-              </h3>
-              <ul className="space-y-3">
-                <li>
-                  <Link
-                    href="#features"
-                    className="text-gray-600 hover:text-emerald-500 transition-colors">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-gray-600 hover:text-emerald-500 transition-colors">
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-gray-600 hover:text-emerald-500 transition-colors">
-                    Case Studies
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-gray-600 hover:text-emerald-500 transition-colors">
-                    Documentation
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4">
-                Company
-              </h3>
-              <ul className="space-y-3">
-                <li>
-                  <Link
-                    href="#"
-                    className="text-gray-600 hover:text-emerald-500 transition-colors">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-gray-600 hover:text-emerald-500 transition-colors">
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-gray-600 hover:text-emerald-500 transition-colors">
-                    Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-gray-600 hover:text-emerald-500 transition-colors">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div> */}
       <footer className="bg-white border-t border-gray-100 py-12">
         <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row items-center justify-between">
           <p className="text-gray-500 text-sm">
