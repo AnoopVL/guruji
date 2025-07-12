@@ -1,11 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Enable standalone output for Docker
+  output: "standalone",
+
   eslint: {
     ignoreDuringBuilds: true,
   },
 
   images: {
-    // remove 'unoptimized: true' if hosting on vercel
+    // Keep unoptimized for Docker deployment
     unoptimized: true,
     domains: ["lh3.googleusercontent.com"],
     remotePatterns: [
