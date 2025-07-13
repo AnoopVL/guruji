@@ -6,8 +6,8 @@ FROM node:18-alpine AS base
 # 2. Install dependencies only when needed
 FROM base AS deps
 
-# 3. apk: alpine's package manager, libc6-compact: adds compatibilty for glibc
-RUN apk add --no-cache libc6-compact
+# 3. apk: alpine's package manager, libc6-compat(not compact): adds compatibilty for glibc
+RUN apk add --no-cache libc6-compat
 
 # 4. set working directory inside the container
 WORKDIR /app
@@ -35,11 +35,11 @@ COPY --from=deps /app/node_modules ./node_modules
 # 11. copy rest of the source code into the container
 COPY . .
 
-# 12. build script as defined in package.json
-COPY .env.local .env
+# 12. build script as defined in package.json copying the environment variables for build, later while building the image they are neglected
+# COPY .env.local ./
 RUN pnpm run build
 
-# 13-  Production runner stage
+# 13-19  Production runner stage
 # 13. this will run the app in production (smallest image as possible)
 FROM base AS runner
 WORKDIR /app
