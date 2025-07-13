@@ -1,0 +1,29 @@
+# comments are added by me, they are for my better understanding, don't remove them
+# 1. defines version, this one is stable as of now and is used in most of the docker setups
+version: "3.8"
+
+# 2. this is a top-level key, under which all the container services are defined
+services:
+  guruji-dev: # 3. this is the name of the sevice
+    build: # 4. this tells docker compose to build an image instead of pulling it from dockerhub
+      context: . # 5. use this current directory as context
+      dockerfile: Dockerfile.dev # 6. tells it to use this file
+    ports:
+      - "3000:3000"
+      # 6. maps the container to this specific port
+    volumes: # 7. Mounts our entire project directory (.) into the container’s /app folder.
+      - .:/app # Enables hot reload: edits to your code locally are reflected instantly inside the container.
+      #This will overwrite everything in /app, including the code copied via COPY . . during image build.
+    env_file:
+      - .env.local # 8. Tells Docker Compose to load environment variables from .env.local and pass them into the container.
+    container_name: guruji-dev # 9. Name the container
+    networks:
+      - guruji-dev-network # 10. Assigns this container to a custom network called guruji-dev-network.(no need to create the network as did in the manual docker containerization)
+
+networks:
+  guruji-dev-network: # 11. Defines the actual network
+    driver: bridge # 12. bridge: the default network driver. It allows containers to talk to each other by name.
+
+# to run this docker compose: `docker-compose -f docker-compose.dev.yml up --build`
+# -f: specifies which compose file to use.
+# --build: forces rebuilding the image in case something changed in the Dockerfile.dev.

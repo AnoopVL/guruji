@@ -1,0 +1,24 @@
+# Comment are written by me for my better understanding, do not remove them
+# 1. tell docker which base image to use 
+FROM node:18-alpine
+
+# 2. set working ddirectory
+WORKDIR /app
+
+# 3. install pnpm globally
+RUN npm install -g pnpm
+
+# 4. copy package.json and pnpm-lock from local machine to docker environment
+COPY package.json pnpm-lock.yaml ./
+
+# 5. Install dependencies
+RUN  pnpm install
+
+# 6. copy entire source code excluding the files in .dockerignore (including .env.local as it is not dockerignored)
+COPY . .
+
+# 7. Tell docker that this container will listen to port 3000, but it doesnt actually start the port
+EXPOSE 3000
+
+# 8. set default commands to run container starts
+CMD [ "pnpm", "dev"]
