@@ -12,7 +12,8 @@ services:
       - "3000:3000"
       # 6. maps the container to this specific port
     volumes: # 7. Mounts our entire project directory (.) into the container’s /app folder.
-      - .:/app # Enables hot reload: edits to your code locally are reflected instantly inside the container.
+      - .:/app # mounts your code (incl. .env.local) : Enables hot reload: edits to your code locally are reflected instantly inside the container.
+      - /app/node_modules # preserves container’s node_modules
       #This will overwrite everything in /app, including the code copied via COPY . . during image build.
     env_file:
       - .env.local # 8. Tells Docker Compose to load environment variables from .env.local and pass them into the container.

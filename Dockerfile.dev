@@ -15,7 +15,9 @@ COPY package.json pnpm-lock.yaml ./
 RUN  pnpm install
 
 # 6. copy entire source code excluding the files in .dockerignore (including .env.local as it is not dockerignored)
-COPY . .
+# COPY . .
+# Don’t COPY the entire source here!
+# docker-compose.dev.yml will mount your code at runtime.
 
 # 7. Tell docker that this container will listen to port 3000, but it doesnt actually start the port
 EXPOSE 3000

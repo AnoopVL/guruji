@@ -1,0 +1,33 @@
+# comments are added by me, they are for my better understanding, don't remove them
+# 1. defines version, this one is stable as of now and is used in most docker setups
+version: "3.8"
+
+services: # 2. this is a top-level key, under which all the container services are defined
+  guruji: # 3. this is the name of service
+    build: # 4. tells docker-compose to build an image instead of pulling from dockerhub
+      context: . # 5. tells to use this current directory as context
+      dockerfile: Dockerfile # 6. tells docker compose to use this dockerfile
+    ports: # 7. maps the container port 3000 to host port 3000
+      - "3000:3000"
+    container_name: guruji # 8. names this container
+    restart: always # 9. auto-restart in case the container crashes
+    networks: # 10. assign this service to a custom network
+      - guruji-network
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:3000"] # -f: fail on HTTP errors
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 3
+    #   start_period: 10s
+# 11. define the custom network used above
+networks:
+  guruji-network: # 12. name of the network
+    driver: bridge # 13. default driver, containers can communicate with each other via container name
+
+# to run this file: `docker-compose -f docker-compose.yml up --build -d`
+# -f: specifies which compose file to use
+# --build: forces Docker to rebuild the image
+# -d: detached mode, so it runs in the background
+
+# to just restart the container `docker-compose -f docker-compose.yml up -d`
+
