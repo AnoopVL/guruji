@@ -1,0 +1,31 @@
+name: Build and Push Docker Image to Dockerhub # name: Appears in GitHub Actions UI for this workflow run
+
+# Events that trigger the workflow
+on:
+  push:
+    branches: -main # when code is pushed to main branch
+  workflow_dispatch: # this allows us to trigger workflow manually from actions tab
+
+# Here are all the jobs to run the workflow
+jobs:
+  build-and-push-image: # job name shows in actions ui
+    runs-on: ubuntu-latest # on which virtual machine do we want to job to run on
+    steps:
+      - uses: actions/checkout@v4 # Step 1: Check out the repo code on the runner VM
+      - uses: docker/setup-qemu-action@v3 # Step 2: Set up QEMU for cross-platform Docker builds (usually needed for multi-arch; OK to always include)
+      - uses: docker/setup-buildx-action@v3 # Step 3: Set up Docker Buildx, which enables advanced building features (faster, supports caching and multi-arch)
+      - uses: docker/login-action@v3 # Step 4: Login to Docker Hub using your GitHub secrets/variables for authentication
+        with:
+          username: ${{vars.DOCKERHUB_USERNAME}} # Refers to our repo's variable (set in Settings)
+          password: ${{secrets.DOCKERHUB_TOKEN}} # Refers to our repo's secret (set in Settings)
+      - uses: docker/build-push-action@v6 # Step 5: Build and push Docker image to Docker Hub
+        with:
+          context: . # Current directory is used as build context (where Dockerfile lives)
+          push: true #  Actually push the image to Docker Hub
+          tags: anoopvl/guruji-guruji:latest # Tag for our Docker image (adjust as needed)
+
+
+      # (Optional) Add more tags, for example to include a hash for each commit:
+      # tags: anoopvl/guruji-guruji:latest,anoopvl/guruji-guruji: {{ github.sha }}
+
+      # (Optional) Pass build arguments or additional environment vars here if needed
