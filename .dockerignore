@@ -11,8 +11,8 @@ out/
 build/
 
 # Environment files (we'll handle these separately)
-# .env*
-# !.env.example
+.env*
+!.env.example
 
 # Production
 dist

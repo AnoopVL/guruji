@@ -7,6 +7,17 @@ services: # 2. this is a top-level key, under which all the container services a
     build: # 4. tells docker-compose to build an image instead of pulling from dockerhub
       context: . # 5. tells to use this current directory as context
       dockerfile: Dockerfile # 6. tells docker compose to use this dockerfile
+
+      # ============ Build-time environment variables for Next.js ===============
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+        NEXT_PUBLIC_VAPI_PUBLIC_KEY: ${NEXT_PUBLIC_VAPI_PUBLIC_KEY}
+        NEXT_PUBLIC_HOST_URL: ${NEXT_PUBLIC_HOST_URL}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+      # ========================================================================
+
     ports: # 7. maps the container port 3000 to host port 3000
       - "3000:3000"
     container_name: guruji # 8. names this container
@@ -19,15 +30,21 @@ services: # 2. this is a top-level key, under which all the container services a
     #   timeout: 5s
     #   retries: 3
     #   start_period: 10s
+
 # 11. define the custom network used above
 networks:
   guruji-network: # 12. name of the network
     driver: bridge # 13. default driver, containers can communicate with each other via container name
 
-# to run this file: `docker-compose -f docker-compose.yml up --build -d`
+# to run this file:
+# `export $(grep -v '^#' .env.local | xargs)`
+# `docker-compose -f docker-compose.yml up --build -d`
+
 # -f: specifies which compose file to use
 # --build: forces Docker to rebuild the image
 # -d: detached mode, so it runs in the background
 
 # to just restart the container `docker-compose -f docker-compose.yml up -d`
+
+# This will throw an endpoint error or port error when the other Dev container is running
 

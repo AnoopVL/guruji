@@ -26,5 +26,9 @@ networks:
     driver: bridge # 12. bridge: the default network driver. It allows containers to talk to each other by name.
 
 # to run this docker compose: `docker-compose -f docker-compose.dev.yml up --build`
+# to run without build: `docker-compose -f docker-compose.dev.yml up`
+
 # -f: specifies which compose file to use.
 # --build: forces rebuilding the image in case something changed in the Dockerfile.dev.
+
+# This will throw an endpoint error or port error when the other Prod container is running
