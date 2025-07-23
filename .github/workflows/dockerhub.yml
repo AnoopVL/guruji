@@ -23,7 +23,13 @@ jobs:
           context: . # Current directory is used as build context (where Dockerfile lives)
           push: true #  Actually push the image to Docker Hub
           tags: anoopvl/guruji-guruji:latest # Tag for our Docker image (adjust as needed)
-
+          build-args: | # environment variables uploaded to github secrets
+            NEXT_PUBLIC_SUPABASE_URL=${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+            NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+            OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
+            NEXT_PUBLIC_VAPI_PUBLIC_KEY=${{ secrets.NEXT_PUBLIC_VAPI_PUBLIC_KEY }}
+            NEXT_PUBLIC_HOST_URL=${{ vars.NEXT_PUBLIC_HOST_URL }}
+            NEXT_PUBLIC_SITE_URL=${{ vars.NEXT_PUBLIC_SITE_URL }}
 
       # (Optional) Add more tags, for example to include a hash for each commit:
       # tags: anoopvl/guruji-guruji:latest,anoopvl/guruji-guruji: {{ github.sha }}
